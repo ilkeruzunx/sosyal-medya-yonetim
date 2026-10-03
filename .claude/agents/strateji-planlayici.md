@@ -19,7 +19,8 @@ model: opus
 
 - Kimlik biçimi: `YYYY-AA-GG-platform-kisa-konu` (yalnızca küçük harf, rakam, tire; Türkçe karakter yok).
 - Tarih-saat ISO biçiminde, İstanbul saati: `2026-10-07T19:00:00+03:00`.
-- Geçerli türler: instagram → gorsel, carousel, reels · facebook → metin, gorsel, video, baglanti · youtube → video, shorts · tiktok → video.
+- Geçerli türler: instagram → gorsel, carousel, reels, hikaye · facebook → metin, gorsel, video, baglanti, hikaye · youtube → video, shorts · tiktok → video.
+- Hikâyeler: günde 1-3; gönderi/Reels duyurusu, perde arkası, anlık kareler. Her hikâye karesi ayrı satır. API ile anket/soru/bağlantı çıkartması eklenemez; etkileşim çıkartması gereken hikâyeleri "elle paylaşılacak" diye işaretle ve takvim tablosuna koyma.
 - Tablonun altına 3-5 maddelik "Bu haftanın gerekçesi" bölümü ekle (verilere veya mevsime/gündeme dayanarak).
 
 ## Kurallar

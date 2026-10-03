@@ -14,8 +14,8 @@ GONDERI_KLASORU = KOK / "icerik" / "gonderiler"
 
 PLATFORMLAR = {"instagram", "facebook", "youtube", "tiktok"}
 TURLER = {
-    "instagram": {"gorsel", "carousel", "reels"},
-    "facebook": {"metin", "gorsel", "video", "baglanti"},
+    "instagram": {"gorsel", "carousel", "reels", "hikaye"},
+    "facebook": {"metin", "gorsel", "video", "baglanti", "hikaye"},
     "youtube": {"video", "shorts"},
     "tiktok": {"video"},
 }
@@ -25,6 +25,8 @@ DURUMLAR = ["taslak", "incelendi", "onaylandi", "yayinlandi", "hata"]
 METIN_SINIRI = {"instagram": 2200, "facebook": 63206, "youtube": 5000, "tiktok": 2200}
 BASLIK_SINIRI = {"youtube": 100}
 HASHTAG_SINIRI = {"instagram": 30, "tiktok": 30, "youtube": 15}
+
+VIDEO_UZANTILARI = (".mp4", ".mov")
 
 _ON_BILGI = re.compile(r"\A---\n(.*?)\n---\n?(.*)\Z", re.DOTALL)
 
@@ -71,6 +73,9 @@ class Gonderi:
             return dt.datetime.combine(deger, dt.time(0, 0))
         return dt.datetime.fromisoformat(str(deger))
 
+    def video_mu(self, url: str) -> bool:
+        return url.lower().split("?")[0].endswith(VIDEO_UZANTILARI)
+
     def hashtagler(self) -> list[str]:
         return re.findall(r"#\w+", self.metin)
 
@@ -97,7 +102,10 @@ def tumunu_oku(klasor: Path = GONDERI_KLASORU) -> list[Gonderi]:
 def dogrula(g: Gonderi) -> list[str]:
     """Gönderiyi kurallara göre kontrol eder; hata mesajlarının listesini döndürür."""
     h: list[str] = []
-    for alan in ("id", "platform", "tur", "durum", "planlanan_tarih", "metin"):
+    zorunlu = ["id", "platform", "tur", "durum", "planlanan_tarih"]
+    if g.tur != "hikaye":  # hikâyelerde paylaşım metni yoktur
+        zorunlu.append("metin")
+    for alan in zorunlu:
         if not g.veri.get(alan):
             h.append(f"'{alan}' alanı eksik")
     if g.platform and g.platform not in PLATFORMLAR:
@@ -128,6 +136,13 @@ def dogrula(g: Gonderi) -> list[str]:
     medya_gerekir = not (g.platform == "facebook" and g.tur in {"metin", "baglanti"})
     if medya_gerekir and not g.medya:
         h.append("'medya' listesi boş; bu tür için en az bir medya gerekir")
+    if g.tur == "hikaye":
+        if g.metin:
+            h.append("hikâyelerde 'metin' paylaşılmaz; boş bırakın, yazıyı görselin/videonun içine koyun")
+        if len(g.medya) > 1:
+            h.append("hikâye tek medya içerir; her kare için ayrı gönderi dosyası açın")
+        if any(not m.startswith("https://") for m in g.medya):
+            h.append("hikâye medyası herkese açık https:// URL olmalı")
     if g.platform == "instagram" and g.medya:
         if any(not m.startswith("https://") for m in g.medya):
             h.append("Instagram medyası herkese açık https:// URL olmalı")

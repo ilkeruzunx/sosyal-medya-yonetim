@@ -65,7 +65,8 @@ def main(argv: list[str] | None = None) -> int:
             basarisiz += 1
             continue
         if not a.gercek:
-            print(f"• [KURU] {g.platform}/{g.tur} {g.kimlik} — {g.metin[:60]!r}")
+            ozet = g.medya[0] if g.tur == "hikaye" else repr(g.metin[:60])
+            print(f"• [KURU] {g.platform}/{g.tur} {g.kimlik} — {ozet}")
             continue
         try:
             sonuc = istemci(g.platform).yayinla(g)

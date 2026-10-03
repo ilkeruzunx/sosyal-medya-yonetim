@@ -11,7 +11,7 @@ Bir haftalık içerik üretim hattını yönet. Argümanlar: $ARGUMENTS
 2. **Kancalar** — `hook-yazari`: takvimdeki tüm gönderiler için `icerik/kancalar/<hafta>.md`.
 3. **Senaryo/metin** — Gönderileri platforma göre 2-4 gruba böl; her grup için `senarist`i **paralel** çağır (takvim, kanca dosyası, kimlikler).
 4. **Görsel üretim** — Oluşan dosyaları türe göre ayır ve **paralel** çağır:
-   - `gorsel`/`carousel` → `tasarimci`
+   - `gorsel`/`carousel`/`hikaye` → `tasarimci`
    - video türleri (`reels`, `shorts`, `video`) → `yz-icerik-ureticisi`
    - Facebook `metin`/`baglanti` → atla
 5. **İnceleme** — `marka-editoru`: tüm dosyalar.

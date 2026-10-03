@@ -45,6 +45,9 @@ def test_kaydet_oku_gidis_donus(klasor):
     ({"medya": ["http://guvensiz.com/v.mp4"]}, "https://"),
     ({"durum": "onaylandi"}, "onaylayan"),
     ({"platform": "youtube", "tur": "video"}, "baslik"),
+    ({"tur": "hikaye"}, "metin' paylaşılmaz"),
+    ({"tur": "hikaye", "metin": "", "medya": ["https://a/1.jpg", "https://a/2.jpg"]}, "tek medya"),
+    ({"platform": "facebook", "tur": "hikaye", "metin": "", "medya": ["http://a/1.jpg"]}, "https://"),
 ])
 def test_dogrulama_hatalari(degisiklik, beklenen):
     g = oku(ORNEK)
@@ -134,3 +137,36 @@ def test_yayinla_id_ile_zamani_beklemez(klasor, monkeypatch):
     monkeypatch.setattr(yayinla, "istemci", lambda p: Sahte)
     assert yayinla.main(["--id", g.kimlik, "--id", "olmayan", "--gercek"]) == 1
     assert oku(g.yol).durum == "yayinlandi"
+
+
+@pytest.mark.parametrize("platform", ["instagram", "facebook"])
+def test_hikaye_metinsiz_gecerli(platform):
+    g = oku(ORNEK)
+    g.veri.update(platform=platform, tur="hikaye", metin="", medya=["https://a/kare.jpg"])
+    assert dogrula(g) == []
+
+
+def test_instagram_hikaye_istekleri(monkeypatch):
+    from araclar.platformlar import instagram
+    monkeypatch.setenv("META_ERISIM_TOKENI", "t")
+    monkeypatch.setenv("META_IG_KULLANICI_ID", "ig")
+    cagrilar = []
+
+    def sahte_istek(yontem, url, **kw):
+        cagrilar.append((yontem, url, kw.get("data") or kw.get("params")))
+        if url.endswith("/media"):
+            return {"id": "k1"}
+        if url.endswith("/media_publish"):
+            return {"id": "m1"}
+        if "fields" in (kw.get("params") or {}) and kw["params"]["fields"] == "status_code":
+            return {"status_code": "FINISHED"}
+        return {"permalink": None}
+
+    monkeypatch.setattr(instagram, "istek", sahte_istek)
+    g = oku(ORNEK)
+    g.veri.update(tur="hikaye", metin="", medya=["https://a/klip.mp4"])
+    sonuc = instagram.yayinla(g)
+    olustur = cagrilar[0][2]
+    assert olustur["media_type"] == "STORIES" and olustur["video_url"] == "https://a/klip.mp4"
+    assert "caption" not in olustur
+    assert sonuc == {"platform_id": "m1", "url": None, "tur": "hikaye"}

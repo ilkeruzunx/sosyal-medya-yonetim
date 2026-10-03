@@ -10,7 +10,7 @@ Akış: **plan → taslak → editör incelemesi → insan onayı → yayın →
 | 6 | `hook-yazari` | Kanca alternatifleri ve seçim | `icerik/kancalar/YYYY-Www.md` |
 | 5 | `senarist` | Gönderi dosyası, metin, senaryo | `icerik/gonderiler/<kimlik>.md` |
 | 4 | `yz-icerik-ureticisi` | Video çekim listesi, YZ promptları, seslendirme | gönderi gövdesi `## Üretim paketi` |
-| 3 | `tasarimci` | Görsel/carousel brief'i, kapak | gönderi gövdesi `## Tasarım brief'i` |
+| 3 | `tasarimci` | Görsel/carousel/hikâye brief'i, kapak | gönderi gövdesi `## Tasarım brief'i` |
 | 2 | ana oturum (`/ekip`) | Yönetici: dağıtım ve sıralama | — |
 | 1 | `teknik-uzman` | API, token, yayın hataları, kod | `araclar/` |
 | + | `strateji-planlayici` | Haftalık takvim | `icerik/takvim/YYYY-Www.md` |
@@ -31,6 +31,7 @@ Sıra: strateji → hook → senarist → (tasarımcı ∥ YZ üretici, türe g�
 `taslak → incelendi → onaylandi → yayinlandi` (veya `hata`).
 - Ajanlar en fazla `incelendi` yapabilir. `onaylandi`, `onaylayan`, `onay_tarihi`, `yayin` alanlarını
   yalnızca `araclar.onayla` / `araclar.yayinla` yazar; `.claude/hooks/onay_korumasi.py` elle yazmayı engeller.
+- Hikâyeler (`tur: hikaye`, Instagram/Facebook): `metin` boş, tek medya; diğer türler gibi insan onayından geçer.
 - Biçim örneği: `icerik/ornek-gonderi.md`. Kurallar: `araclar/icerik.py` → `dogrula`.
 
 ## Geliştirme

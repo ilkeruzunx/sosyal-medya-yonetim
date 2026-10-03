@@ -20,7 +20,23 @@ def _gonder(uc: str, **alanlar) -> dict:
                  data={**alanlar, "access_token": meta.token()})
 
 
+def _video_hikaye(url: str) -> str:
+    baslat = _gonder("video_stories", upload_phase="start")
+    istek("POST", baslat["upload_url"],
+          headers={"Authorization": f"OAuth {meta.token()}", "file_url": url})
+    bitir = _gonder("video_stories", upload_phase="finish", video_id=baslat["video_id"])
+    return bitir["post_id"]
+
+
 def yayinla(g) -> dict:
+    if g.tur == "hikaye":
+        url = g.medya[0]
+        if g.video_mu(url):
+            pid = _video_hikaye(url)
+        else:
+            foto = _gonder("photos", url=url, published="false")["id"]
+            pid = _gonder("photo_stories", photo_id=foto)["post_id"]
+        return {"platform_id": pid, "url": f"https://www.facebook.com/{pid}", "tur": "hikaye"}
     if g.tur == "video":
         s = _gonder("videos", file_url=g.medya[0], description=g.metin,
                     title=str(g.veri.get("baslik", "")))
@@ -40,6 +56,8 @@ def yayinla(g) -> dict:
 
 
 def metrikler(sonuc: dict) -> dict:
+    if sonuc.get("tur") == "hikaye":
+        return {"not": "Facebook hikâye metrikleri API ile alınmıyor; Meta Business Suite'e bakın"}
     s = istek("GET", f"{meta.taban()}/{sonuc['platform_id']}", params={
         "fields": "shares,reactions.summary(true).limit(0),comments.summary(true).limit(0)",
         "access_token": meta.token(),

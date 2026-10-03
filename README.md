@@ -33,7 +33,7 @@ Yalnızca içerik üretimi için API bilgisi gerekmez; `.env` yalnızca `/yayinl
 
 | Platform | Gerekenler | Not |
 |---|---|---|
-| Instagram + Facebook | Instagram **Business/Creator** hesabı, bağlı Facebook Sayfası, Meta for Developers uygulaması, uzun ömürlü **sayfa** erişim tokenı | Medya herkese açık `https://` URL olmalı (ör. S3, Cloudinary, kendi CDN'iniz) |
+| Instagram + Facebook | Instagram **Business/Creator** hesabı, bağlı Facebook Sayfası, Meta for Developers uygulaması, uzun ömürlü **sayfa** erişim tokenı | Medya herkese açık `https://` URL olmalı (ör. S3, Cloudinary, kendi CDN'iniz). Hikâyelerde API anket/soru/bağlantı çıkartması desteklemez; bunları telefondan paylaşın. Hikâye metrikleri yalnızca ilk 24 saat alınabilir |
 | YouTube | Google Cloud projesi, YouTube Data API v3, OAuth istemcisi | Yenileme tokenı: `python -m araclar.youtube_yetkilendir istemci_sirri.json` (kendi bilgisayarınızda). Medya yerel dosya yolu veya URL olabilir |
 | TikTok | developers.tiktok.com uygulaması, Content Posting API (`video.publish`, `video.list`) | Denetimden geçmemiş uygulamalar yalnızca **gizli** paylaşım yapabilir. Video URL'si TikTok'ta doğrulanmış alan adında olmalı |
 

@@ -13,7 +13,7 @@ Sen ekibin yöneticisisin (ana oturum). Alt ajanlar birbirini çağıramaz; koor
 | 6 | `hook-yazari` | kanca alternatifleri, ilk satır/ilk 3 saniye |
 | 5 | `senarist` | gönderi dosyası, paylaşım metni, video senaryosu |
 | 4 | `yz-icerik-ureticisi` | video türleri: çekim listesi, YZ video/görsel promptu, seslendirme |
-| 3 | `tasarimci` | görsel/carousel brief'i, YouTube kapağı |
+| 3 | `tasarimci` | görsel/carousel/hikâye brief'i, YouTube kapağı |
 | 2 | sen (`/ekip`) | dağıtım ve sıralama |
 | 1 | `teknik-uzman` | API, token, yayın hatası, kod |
 | + | `strateji-planlayici` | takvim, kampanya |

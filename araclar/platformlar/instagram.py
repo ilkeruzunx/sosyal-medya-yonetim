@@ -6,10 +6,9 @@ instagram_content_publish + instagram_manage_insights izinli uzun ömürlü toke
 
 from __future__ import annotations
 
+from ..icerik import VIDEO_UZANTILARI
 from . import meta
 from .ortak import PlatformHatasi, bekle, istek, ortam
-
-_VIDEO_UZANTILARI = (".mp4", ".mov")
 
 
 def _kullanici() -> str:
@@ -33,7 +32,7 @@ def _hazir_olunca(kapsayici_id: str) -> None:
 
 
 def _ogeyi_hazirla(url: str, carousel_ogesi: bool = False) -> str:
-    video = url.lower().split("?")[0].endswith(_VIDEO_UZANTILARI)
+    video = url.lower().split("?")[0].endswith(VIDEO_UZANTILARI)
     alanlar = {"video_url": url, "media_type": "VIDEO"} if video else {"image_url": url}
     if carousel_ogesi:
         alanlar["is_carousel_item"] = "true"
@@ -41,7 +40,11 @@ def _ogeyi_hazirla(url: str, carousel_ogesi: bool = False) -> str:
 
 
 def yayinla(g) -> dict:
-    if g.tur == "reels":
+    if g.tur == "hikaye":
+        url = g.medya[0]
+        alan = "video_url" if g.video_mu(url) else "image_url"
+        kid = _kapsayici(media_type="STORIES", **{alan: url})
+    elif g.tur == "reels":
         kid = _kapsayici(media_type="REELS", video_url=g.medya[0], caption=g.metin,
                          share_to_feed="true")
     elif g.tur == "carousel":
@@ -57,11 +60,26 @@ def yayinla(g) -> dict:
                   data={"creation_id": kid, "access_token": meta.token()})
     bilgi = istek("GET", f"{meta.taban()}/{medya['id']}",
                   params={"fields": "permalink", "access_token": meta.token()})
-    return {"platform_id": medya["id"], "url": bilgi.get("permalink")}
+    sonuc = {"platform_id": medya["id"], "url": bilgi.get("permalink")}
+    if g.tur == "hikaye":
+        sonuc["tur"] = "hikaye"  # metrikler yalnızca 24 saat alınabilir
+    return sonuc
+
+
+def _hikaye_metrikleri(mid: str) -> dict:
+    ic = istek("GET", f"{meta.taban()}/{mid}/insights",
+               params={"metric": "reach,views,replies,shares", "access_token": meta.token()})
+    adlar = {"reach": "erisim", "views": "goruntulenme", "replies": "yanit", "shares": "paylasim"}
+    return {adlar.get(m["name"], m["name"]): m["values"][0]["value"] for m in ic.get("data", [])}
 
 
 def metrikler(sonuc: dict) -> dict:
     mid = sonuc["platform_id"]
+    if sonuc.get("tur") == "hikaye":
+        try:
+            return _hikaye_metrikleri(mid)
+        except PlatformHatasi as e:
+            return {"not": f"hikâye metrikleri alınamadı (yalnızca ilk 24 saat açıktır): {e}"}
     temel = istek("GET", f"{meta.taban()}/{mid}",
                   params={"fields": "like_count,comments_count", "access_token": meta.token()})
     veri = {"begeni": temel.get("like_count"), "yorum": temel.get("comments_count")}
