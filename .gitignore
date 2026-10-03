@@ -1,0 +1,8 @@
+.env
+*.secret.json
+istemci_sirri*.json
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+.claude/settings.local.json

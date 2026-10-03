@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m araclar.dogrula:*)",
+      "Bash(python -m araclar.analiz:*)",
+      "Bash(python -m pytest:*)"
+    ],
+    "ask": [
+      "Bash(python -m araclar.onayla:*)",
+      "Bash(python -m araclar.yayinla:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Bash(cat .env)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/onay_korumasi.py\""
+          }
+        ]
+      }
+    ]
+  }
+}
