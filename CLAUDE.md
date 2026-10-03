@@ -23,8 +23,8 @@ Sıra: strateji → hook → senarist → (tasarımcı ∥ YZ üretici, türe g�
 - `/ekip <istek>` — yönetici; serbest isteği doğru ajanlara dağıtır.
 - `/haftalik-plan [hafta] [notlar]` — tüm hattı çalıştırır.
 - `/icerik-uret <fikir>` — tek içerik için hook → senaryo → tasarım/YZ → editör.
-- `/onayla <kimlik...>` — yalnızca insan çağırabilir.
-- `/yayinla [--id kimlik]` — yalnızca insan çağırabilir; önce kuru çalışma, sonra onay.
+- `/onayla <kimlik...>` — yalnızca insan çağırabilir; onaydan sonra hemen paylaşmayı teklif eder (test dönemi akışı).
+- `/yayinla [--id kimlik ...]` — yalnızca insan çağırabilir; onaylı ve zamanı gelmiş (veya `--id` ile seçilen) gönderileri paylaşır. Zamanlanmış otomatik yayın henüz yok.
 - `/rapor [gün]` — analist.
 
 ## Gönderi durumu

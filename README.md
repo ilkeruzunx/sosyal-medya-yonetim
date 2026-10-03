@@ -16,7 +16,8 @@ Instagram, Facebook, YouTube ve TikTok için içerik planlar, yazar, denetler, (
 
  /haftalik-plan → strateji → hook → senarist → tasarımcı ∥ YZ üretici → editör   (durum: incelendi)
  siz: medya URL'lerini ekleyin → /onayla <kimlik>                                (durum: onaylandi)
- /yayinla: kuru çalışma → onayınız → paylaşım                                    (durum: yayinlandi)
+        └─ "şimdi paylaşılsın mı?" → evet → paylaşım                             (durum: yayinlandi)
+ /yayinla: onaylı bekleyenleri sonradan paylaşmak için
 ```
 
 ## Kurulum

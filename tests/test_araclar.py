@@ -120,3 +120,17 @@ def test_kanca_elle_onayi_engeller():
     assert _kanca({"file_path": yol, "old_string": "durum: taslak",
                    "new_string": "durum: incelendi"}) == 0
     assert _kanca({"file_path": str(Path("/baska/dosya.md")), "content": "durum: onaylandi"}) == 0
+
+
+def test_yayinla_id_ile_zamani_beklemez(klasor, monkeypatch):
+    g = _kopya(klasor, durum="onaylandi", onaylayan="Test",
+               planlanan_tarih="2099-01-01T10:00:00+03:00")
+
+    class Sahte:
+        @staticmethod
+        def yayinla(_):
+            return {"platform_id": "9", "url": "https://instagram.com/p/y"}
+
+    monkeypatch.setattr(yayinla, "istemci", lambda p: Sahte)
+    assert yayinla.main(["--id", g.kimlik, "--id", "olmayan", "--gercek"]) == 1
+    assert oku(g.yol).durum == "yayinlandi"

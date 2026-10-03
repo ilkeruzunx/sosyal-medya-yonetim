@@ -1,7 +1,7 @@
 ---
 name: yayinla
 description: Onaylanmış ve zamanı gelmiş gönderileri sosyal medya hesaplarında yayınlar.
-argument-hint: "[--id <kimlik>]"
+argument-hint: "[--id <kimlik> ...]"
 disable-model-invocation: true
 ---
 

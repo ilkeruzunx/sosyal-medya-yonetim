@@ -6,7 +6,7 @@ Gerçekten paylaşmak için --gercek verin.
 Kullanım:
     python -m araclar.yayinla                    # zamanı gelenleri listele (kuru)
     python -m araclar.yayinla --gercek           # zamanı gelenleri yayınla
-    python -m araclar.yayinla --id <kimlik> --gercek   # zamanı beklemeden tek gönderi
+    python -m araclar.yayinla --id <k1> --id <k2> --gercek   # zamanı beklemeden seçilenler
 """
 
 from __future__ import annotations
@@ -27,12 +27,12 @@ def _yerel(t: dt.datetime) -> dt.datetime:
     return t if t.tzinfo else t.replace(tzinfo=YEREL_SAAT)
 
 
-def secilenler(kimlik: str | None, simdi: dt.datetime):
+def secilenler(kimlikler: list[str] | None, simdi: dt.datetime):
     for g in tumunu_oku():
         if g.durum != "onaylandi":
             continue
-        if kimlik:
-            if g.kimlik == kimlik:
+        if kimlikler:
+            if g.kimlik in kimlikler:
                 yield g
         elif g.planlanan and _yerel(g.planlanan) <= simdi:
             yield g
@@ -41,17 +41,23 @@ def secilenler(kimlik: str | None, simdi: dt.datetime):
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--gercek", action="store_true", help="gerçekten paylaş (yoksa kuru çalışma)")
-    ap.add_argument("--id", help="yalnızca bu kimlikli onaylı gönderi (zamanını beklemez)")
+    ap.add_argument("--id", action="append",
+                    help="yalnızca bu kimlikli onaylı gönderi(ler); planlanan zamanı beklemez, tekrarlanabilir")
     a = ap.parse_args(argv)
     ortam.yukle()
 
     simdi = dt.datetime.now(YEREL_SAAT)
     liste = list(secilenler(a.id, simdi))
     if not liste:
-        print("Yayınlanacak onaylı gönderi yok." + (f" (id={a.id})" if a.id else ""))
+        print("Yayınlanacak onaylı gönderi yok." + (f" (id={', '.join(a.id)})" if a.id else ""))
         return 1 if a.id else 0
 
     basarisiz = 0
+    if a.id:
+        eksik = set(a.id) - {g.kimlik for g in liste}
+        for k in sorted(eksik):
+            print(f"✗ {k}: onaylı gönderi bulunamadı")
+        basarisiz += len(eksik)
     for g in liste:
         hatalar = dogrula(g)
         if hatalar:
