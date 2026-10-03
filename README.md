@@ -4,13 +4,19 @@
 Instagram, Facebook, YouTube ve TikTok için içerik planlar, yazar, denetler, (onayınızla) yayınlar ve raporlar.
 
 ```
-/haftalik-plan ──► strateji-planlayici ──► icerik-yazari (paralel) ──► marka-editoru
-                                                                          │ durum: incelendi
-                    siz: dosyaları okuyun, medya URL'si ekleyin ──► /onayla <kimlik>
-                                                                          │ durum: onaylandi
-                                       /yayinla (kuru çalışma → onayınız → paylaşım)
-                                                                          │ durum: yayinlandi
-                                         /rapor ──► analist ──► sonraki haftanın planına girdi
+ 7. kat  analist ─────────────── metrikler ve haftalık rapor ──────────────┐
+ 6. kat  hook-yazari ─────────── kanca alternatifleri, en güçlüsü           │
+ 5. kat  senarist ────────────── gönderi metni + video senaryosu            │ öneriler
+ 4. kat  yz-icerik-ureticisi ─── çekim listesi, YZ video/görsel promptları  │
+ 3. kat  tasarimci ───────────── carousel/görsel brief'i, YouTube kapağı    │
+ 2. kat  /ekip (yönetici) ────── işi dağıtır, sıralar, özetler              │
+ 1. kat  teknik-uzman ────────── API, token, yayın hataları                 │
+ +       strateji-planlayici ─── haftalık takvim ◄──────────────────────────┘
+ +       marka-editoru ───────── onay öncesi son kontrol
+
+ /haftalik-plan → strateji → hook → senarist → tasarımcı ∥ YZ üretici → editör   (durum: incelendi)
+ siz: medya URL'lerini ekleyin → /onayla <kimlik>                                (durum: onaylandi)
+ /yayinla: kuru çalışma → onayınız → paylaşım                                    (durum: yayinlandi)
 ```
 
 ## Kurulum
@@ -18,7 +24,7 @@ Instagram, Facebook, YouTube ve TikTok için içerik planlar, yazar, denetler, (
 1. Bağımlılıklar: `pip install -r requirements.txt`
 2. `cp .env.example .env` ve platform bilgilerini doldurun (aşağıya bakın).
 3. `marka/marka-rehberi.md` içindeki `[DOLDURUN]` alanlarını tamamlayın.
-4. Claude Code'u bu klasörde açıp `/haftalik-plan` yazın.
+4. Claude Code'u bu klasörde açıp `/haftalik-plan` veya `/ekip <istek>` yazın.
 
 Yalnızca içerik üretimi için API bilgisi gerekmez; `.env` yalnızca `/yayinla` ve `/rapor` için gereklidir.
 
@@ -44,6 +50,7 @@ gizli değişkenleri kullanın ve ağ politikasının `graph.facebook.com`, `*.g
 ## Klasörler
 ```
 .claude/agents/     ajan tanımları          icerik/takvim/      haftalık takvimler
+                                            icerik/kancalar/    hook alternatifleri
 .claude/skills/     /komutlar               icerik/gonderiler/  gönderi dosyaları
 .claude/hooks/      onay koruması           raporlar/           performans raporları
 araclar/            Python API araçları     marka/              marka rehberi

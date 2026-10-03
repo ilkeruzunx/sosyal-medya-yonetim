@@ -1,19 +1,21 @@
 ---
 name: haftalik-plan
-description: Ajan ekibiyle bir haftalık içerik planı ve taslakları üretir (strateji → yazım → editör incelemesi). Kullanıcı haftalık plan, içerik takvimi veya "gelecek haftanın içerikleri" istediğinde kullanın.
+description: Ajan ekibiyle bir haftalık içerik planı ve taslakları üretir (strateji → hook → senaryo → tasarım/YZ üretim → editör). Kullanıcı haftalık plan, içerik takvimi veya "gelecek haftanın içerikleri" istediğinde kullanın.
 argument-hint: "[hafta, ör. 2026-W41] [ek notlar]"
 ---
 
-Bir haftalık içerik üretim hattını çalıştır. Argümanlar: $ARGUMENTS
+Bir haftalık içerik üretim hattını yönet. Argümanlar: $ARGUMENTS
 (Hafta verilmediyse bir sonraki ISO haftayı kullan.)
 
-1. **Strateji** — `strateji-planlayici` alt ajanını çağır: hafta, kullanıcı notları ve varsa son rapor yolu ile `icerik/takvim/<hafta>.md` oluştursun.
-2. **Yazım** — Takvimdeki gönderileri platforma göre 2-4 gruba böl ve her grup için `icerik-yazari` alt ajanını **paralel** çağır. Her birine takvim dosyasını ve yazacağı kimlikleri ver.
-3. **İnceleme** — Tüm dosyalar yazılınca `marka-editoru` alt ajanını oluşturulan dosya listesiyle çağır.
-4. `python -m araclar.dogrula --ozet` çalıştır.
-5. Kullanıcıya kısa özet ver:
-   - Takvim dosyası yolu, kaç gönderi, kaçı `incelendi` / kaçı `taslak`ta kaldı ve neden.
-   - Medya ihtiyacı olan gönderilerin listesi (medya URL'si eklenmeden onaylanamaz).
-   - Sonraki adım: dosyaları inceleyip `/onayla <kimlik...>`.
+1. **Strateji** — `strateji-planlayici`: `icerik/takvim/<hafta>.md` oluştursun (son rapor yolunu ve kullanıcı notlarını ver).
+2. **Kancalar** — `hook-yazari`: takvimdeki tüm gönderiler için `icerik/kancalar/<hafta>.md`.
+3. **Senaryo/metin** — Gönderileri platforma göre 2-4 gruba böl; her grup için `senarist`i **paralel** çağır (takvim, kanca dosyası, kimlikler).
+4. **Görsel üretim** — Oluşan dosyaları türe göre ayır ve **paralel** çağır:
+   - `gorsel`/`carousel` → `tasarimci`
+   - video türleri (`reels`, `shorts`, `video`) → `yz-icerik-ureticisi`
+   - Facebook `metin`/`baglanti` → atla
+5. **İnceleme** — `marka-editoru`: tüm dosyalar.
+6. `python -m araclar.dogrula --ozet` çalıştır.
+7. Kullanıcıya özet: takvim yolu; kaç gönderi `incelendi` / `taslak` (neden); üretilmesi/çekilmesi gereken medya listesi (her biri için kimlik + kısa tarif); sonraki adım: medya URL'lerini `medya` alanına ekleyip `/onayla <kimlik...>`.
 
 Hiçbir gönderiyi onaylama veya yayınlama.

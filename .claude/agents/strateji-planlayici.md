@@ -25,4 +25,4 @@ model: opus
 ## Kurallar
 - Tek bir fikri platformlara uyarlayarak çoğalt (ör. bir Reels → TikTok + YouTube Shorts), ama aynı gün aynı saate yığma.
 - Rapor yoksa genel kabul gören saatlerle başla ve bunu gerekçede belirt.
-- Gönderi dosyası YAZMA; o iş `icerik-yazari` ajanının. Yayınlama YAPMA.
+- Gönderi dosyası veya kanca YAZMA; o iş `hook-yazari` ve `senarist` ajanlarının. Yayınlama YAPMA.

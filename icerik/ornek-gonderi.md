@@ -17,6 +17,10 @@ metin: |
 medya:
   - https://ornek-cdn.ciftlikiletisim.com/videolar/sabah-sagimi.mp4
 ---
+## Kanca
+"Saat 05.30. Çiftlikte günün ilk sesi" — [somutluk] seçildi; saat bilgisi merak uyandırıyor.
+Görsel kanca: karanlıkta açılan ahır kapısı + ekranda "05.30".
+
 ## Senaryo (60 sn, dikey 9:16)
 | Süre | Görüntü | Ses / yazı |
 |---|---|---|
@@ -28,3 +32,9 @@ medya:
 
 ## Medya ihtiyacı
 Yukarıdaki URL örnektir; gerçek video yüklendikten sonra değiştirin.
+
+## Üretim paketi
+- Kaynak: tüm sahneler gerçek çekim (hayvanlar ve süreç gerçeklik gerektirir).
+- Çekim listesi: ahır kapısı (sabit, 3 sn, doğal ışık) · besleme (el kamerası, 10 sn) · sağım yakın planları (3×8 sn) · soğutma tankı (5 sn) · gün doğumu (timelapse, 5 sn).
+- Seslendirme: "Saat beş buçuk. Çiftlikte gün, sağımla başlar..." (00:15-00:40)
+- Müzik: Instagram kütüphanesinden sakin akustik, ~80 BPM.
