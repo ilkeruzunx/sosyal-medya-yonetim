@@ -13,7 +13,7 @@ Instagram, Facebook, YouTube ve TikTok için içerik planlar, yazar, denetler, (
  1. kat  teknik-uzman ────────── API, token, yayın hataları                 │
  +       strateji-planlayici ─── haftalık takvim ◄──────────────────────────┘
  +       marka-editoru ───────── onay öncesi son kontrol
- +       musteri-iliskileri ──── yorum yanıt taslakları (/yorumlar, onayınızla gönderilir)
+ +       musteri-iliskileri ──── yorum ve DM yanıt taslakları (/mesajlar, onayınızla gönderilir)
 
  /haftalik-plan → strateji → hook → senarist → tasarımcı ∥ YZ üretici → editör   (durum: incelendi)
  siz: medya URL'lerini ekleyin → /onayla <kimlik>                                (durum: onaylandi)
@@ -43,12 +43,20 @@ Claude Code'u web/mobil üzerinden kullanıyorsanız `.env` yerine ortam (enviro
 gizli değişkenleri kullanın ve ağ politikasının `graph.facebook.com`, `*.googleapis.com`,
 `open.tiktokapis.com` alan adlarına izin verdiğinden emin olun.
 
-## Yorum yanıtları
-`/yorumlar` Instagram, Facebook ve YouTube'daki yanıtlanmamış yorumları çeker; `musteri-iliskileri` ajanı
-taslak yazar, şikâyet/fiyat/kişisel veri gibi hassas yorumları size bırakır. Siz seçtiklerinizi onaylayınca gönderilir.
-TikTok yorumları ve tüm platformlardaki DM'ler henüz desteklenmiyor. Yorumlar kişisel veri içerdiği için
-git'e girmeyen `yerel/` klasöründe tutulur ve 30 gün sonra silinir. Önce marka rehberindeki
-"Sık sorulan sorular" bölümünü doldurun.
+## Yorum ve DM yanıtları
+`/mesajlar` Instagram ve Facebook DM'lerini, Instagram, Facebook ve YouTube'daki yanıtlanmamış yorumları çeker;
+`musteri-iliskileri` ajanı taslak yazar, şikâyet/fiyat/sipariş/kişisel veri gibi hassas olanları size bırakır.
+Siz seçtiklerinizi onaylayınca gönderilir.
+
+- **24 saat kuralı:** Meta, DM'lere yalnızca kişinin son mesajından sonraki 24 saat içinde yanıt verilmesine izin verir.
+  Liste DM'leri kalan süreye göre sıralar; `/mesajlar`ı en az günde 1-2 kez çalıştırın. Süresi dolanları uygulamadan yanıtlayın.
+- **İzinler:** `pages_messaging`, `instagram_manage_messages` (DM) ve `instagram_manage_comments`,
+  `pages_read_user_content`, `pages_manage_engagement` (yorum). Gerçek müşterilere mesaj göndermek için Meta uygulama
+  incelemesi gerekebilir; o zamana kadar uygulamaya rolü olan test hesaplarıyla deneyin. Instagram ayarlarında
+  "Mesajlara bağlı araçlara erişime izin ver" seçeneği açık olmalı.
+- TikTok yorum ve DM'leri desteklenmiyor.
+- Mesajlar kişisel veri içerdiği için git'e girmeyen `yerel/` klasöründe tutulur, Claude bu dosyayı doğrudan okuyamaz
+  ve sonuçlananlar 30 gün sonra silinir. Önce marka rehberindeki "Sık sorulan sorular" bölümünü doldurun.
 
 ## Güvenlik önlemleri
 - Ajanlar hiçbir gönderiyi onaylayamaz veya yayınlayamaz: `/onayla` ve `/yayinla` yalnızca sizin tarafınızdan çağrılabilir,

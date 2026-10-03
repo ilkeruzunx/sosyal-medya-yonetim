@@ -173,14 +173,15 @@ def test_instagram_hikaye_istekleri(monkeypatch):
 
 
 @pytest.fixture
-def yorum_deposu(tmp_path, monkeypatch):
-    from araclar import yorumlar
-    monkeypatch.setattr(yorumlar, "DEPO", tmp_path / "yorumlar.json")
-    return yorumlar
+def gelen(tmp_path, monkeypatch):
+    from araclar import mesajlar
+    monkeypatch.setattr(mesajlar, "DEPO", tmp_path / "mesajlar.json")
+    monkeypatch.setattr(mesajlar, "DM_PLATFORMLARI", [])
+    return mesajlar
 
 
-def test_yorum_akisi(yorum_deposu, monkeypatch):
-    y = yorum_deposu
+def test_yorum_akisi(gelen, monkeypatch):
+    m = gelen
     gonderilen = []
 
     class Sahte:
@@ -194,40 +195,103 @@ def test_yorum_akisi(yorum_deposu, monkeypatch):
             gonderilen.append((yid, metin))
             return {"yanit_id": "r1"}
 
-    monkeypatch.setattr(y, "istemci", lambda p: Sahte)
-    monkeypatch.setattr(y, "PLATFORMLAR", ["instagram"])
-    assert y.main(["cek"]) == 0
-    assert y.main(["cek"]) == 0  # ikinci çekimde tekrar eklenmez
-    assert len(y.yukle()["yorumlar"]) == 1
+    monkeypatch.setattr(m, "istemci", lambda p: Sahte)
+    monkeypatch.setattr(m, "YORUM_PLATFORMLARI", ["instagram"])
+    assert m.main(["cek"]) == 0
+    assert m.main(["cek"]) == 0  # ikinci çekimde tekrar eklenmez
+    assert len(m.yukle()["kayitlar"]) == 1
 
-    assert y.main(["gonder", "1", "--ad", "T", "--gercek"]) == 1  # taslaksız gönderilemez
-    assert y.main(["taslak", "1", "--kategori", "soru", "--yanit", "DM'den yazabilirsin 🌾"]) == 0
-    assert y.main(["gonder", "1", "--ad", "T"]) == 0  # kuru çalışma
+    assert m.main(["gonder", "1", "--ad", "T", "--gercek"]) == 1  # taslaksız gönderilemez
+    assert m.main(["taslak", "1", "--kategori", "soru", "--yanit", "DM'den yazabilirsin 🌾"]) == 0
+    assert m.main(["gonder", "1", "--ad", "T"]) == 0  # kuru çalışma
     assert gonderilen == []
-    assert y.main(["gonder", "1", "--ad", "T", "--gercek"]) == 0
+    assert m.main(["gonder", "1", "--ad", "T", "--gercek"]) == 0
     assert gonderilen == [("c1", "DM'den yazabilirsin 🌾")]
-    kayit = y.yukle()["yorumlar"][0]
+    kayit = m.yukle()["kayitlar"][0]
     assert kayit["durum"] == "gonderildi" and kayit["onaylayan"] == "T"
     with pytest.raises(SystemExit):
-        y.main(["taslak", "1", "--kategori", "soru", "--yanit", "x"])
+        m.main(["taslak", "1", "--kategori", "soru", "--yanit", "x"])
 
 
-def test_yorum_insana_ve_eski_kayit_temizligi(yorum_deposu, monkeypatch):
-    y = yorum_deposu
-    y.kaydet({"sayac": 2, "yorumlar": [
-        {"no": 1, "platform": "instagram", "platform_id": "a", "durum": "atlandi",
+def _dm(no, durum, son_yanit, **ek):
+    return {"no": no, "tur": "dm", "platform": "instagram", "platform_id": f"m{no}", "konusma_id": "k1",
+            "alici_id": "u1", "yazar": "veli", "metin": "Merhaba", "durum": durum,
+            "cekilme": "2026-10-01T00:00:00+00:00", "tarih": "2026-10-01T00:00:00+00:00",
+            "son_yanit": son_yanit, **ek}
+
+
+def test_dm_akisi_ve_24_saat(gelen, monkeypatch):
+    import datetime as dt
+    m = gelen
+    gelecek = (dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=5)).isoformat()
+    gecmis = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=1)).isoformat()
+    m.kaydet({"sayac": 2, "kayitlar": [
+        _dm(1, "taslak", gecmis, yanit="Selam"),
+        {**_dm(2, "taslak", gelecek, yanit="Merhaba, SSS'deki adımlarla sipariş verebilirsin."), "konusma_id": "k2"},
+    ]})
+    giden = []
+    monkeypatch.setattr(m.mesajlasma, "dm_gonder", lambda alici, metin: giden.append((alici, metin)) or {"yanit_id": "x"})
+    assert m.main(["gonder", "1", "2", "--ad", "T", "--gercek"]) == 1
+    kayitlar = {k["no"]: k for k in m.yukle()["kayitlar"]}
+    assert kayitlar[1]["durum"] == "suresi_doldu"
+    assert kayitlar[2]["durum"] == "gonderildi" and len(giden) == 1
+
+
+def test_dm_ayni_konusma_guncellenir(gelen, monkeypatch):
+    import datetime as dt
+    m = gelen
+    gelecek = (dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=20)).isoformat()
+    m.kaydet({"sayac": 1, "kayitlar": [_dm(1, "taslak", gelecek, yanit="eski taslak")]})
+    yeni = {"platform_id": "m9", "konusma_id": "k1", "alici_id": "u1", "yazar": "veli",
+            "metin": "Merhaba\nBir de fiyat?", "tarih": "2026-10-01T01:00:00+00:00", "son_yanit": gelecek}
+    monkeypatch.setattr(m, "DM_PLATFORMLARI", ["instagram"])
+    monkeypatch.setattr(m, "YORUM_PLATFORMLARI", [])
+    monkeypatch.setattr(m.mesajlasma, "dmleri_getir", lambda p, s: [yeni])
+    m.main(["cek"])
+    kayitlar = m.yukle()["kayitlar"]
+    assert len(kayitlar) == 1
+    assert kayitlar[0]["durum"] == "yeni" and "yanit" not in kayitlar[0] and "fiyat" in kayitlar[0]["metin"]
+
+
+def test_meta_dm_bekleyenleri_ayiklar(monkeypatch):
+    import datetime as dt
+    from araclar.platformlar import mesajlasma
+    monkeypatch.setenv("META_ERISIM_TOKENI", "t")
+    monkeypatch.setenv("META_SAYFA_ID", "sayfa")
+    monkeypatch.setenv("META_IG_KULLANICI_ID", "ig")
+    simdi = dt.datetime.now(dt.timezone.utc)
+    z = lambda sa: (simdi - dt.timedelta(hours=sa)).strftime("%Y-%m-%dT%H:%M:%S+0000")
+    yanit = {"data": [
+        {"id": "k1", "messages": {"data": [  # en yeni önce: iki bekleyen, sonra bizim yanıtımız
+            {"id": "a3", "message": "Fiyat?", "from": {"id": "u1", "username": "veli"}, "created_time": z(1)},
+            {"id": "a2", "message": "Merhaba", "from": {"id": "u1", "username": "veli"}, "created_time": z(2)},
+            {"id": "a1", "message": "Selam!", "from": {"id": "ig"}, "created_time": z(3)}]}},
+        {"id": "k2", "messages": {"data": [  # son mesaj bizden: yanıt beklemiyor
+            {"id": "b2", "message": "Rica ederiz", "from": {"id": "ig"}, "created_time": z(1)},
+            {"id": "b1", "message": "Teşekkürler", "from": {"id": "u2"}, "created_time": z(2)}]}},
+    ]}
+    monkeypatch.setattr(mesajlasma, "istek", lambda *a, **k: yanit)
+    sonuc = mesajlasma.dmleri_getir("instagram", simdi - dt.timedelta(days=1))
+    assert len(sonuc) == 1
+    assert sonuc[0]["metin"] == "Merhaba\nFiyat?" and sonuc[0]["alici_id"] == "u1"
+
+
+def test_kayit_insana_ve_eski_kayit_temizligi(gelen, monkeypatch):
+    m = gelen
+    m.kaydet({"sayac": 2, "kayitlar": [
+        {"no": 1, "tur": "yorum", "platform": "instagram", "platform_id": "a", "durum": "atlandi",
          "cekilme": "2020-01-01T00:00:00+00:00", "yazar": "x", "metin": "eski"},
-        {"no": 2, "platform": "instagram", "platform_id": "b", "durum": "yeni",
+        {"no": 2, "tur": "yorum", "platform": "instagram", "platform_id": "b", "durum": "yeni",
          "cekilme": "2020-01-01T00:00:00+00:00", "yazar": "y", "metin": "kargom gelmedi"},
     ]})
-    assert y.main(["insana", "2", "--kategori", "sikayet", "--neden", "teslimat şikâyeti"]) == 0
+    assert m.main(["insana", "2", "--kategori", "sikayet", "--neden", "teslimat şikâyeti"]) == 0
 
     class Bos:
         @staticmethod
         def yorumlari_getir(_):
             return []
 
-    monkeypatch.setattr(y, "istemci", lambda p: Bos)
-    y.main(["cek"])
-    kalan = y.yukle()["yorumlar"]
+    monkeypatch.setattr(m, "istemci", lambda p: Bos)
+    m.main(["cek"])
+    kalan = m.yukle()["kayitlar"]
     assert [k["no"] for k in kalan] == [2] and kalan[0]["durum"] == "insana"
