@@ -3,15 +3,23 @@
     "allow": [
       "Bash(python -m araclar.dogrula:*)",
       "Bash(python -m araclar.analiz:*)",
-      "Bash(python -m pytest:*)"
+      "Bash(python -m pytest:*)",
+      "Bash(python -m araclar.yorumlar cek:*)",
+      "Bash(python -m araclar.yorumlar liste:*)",
+      "Bash(python -m araclar.yorumlar taslak:*)",
+      "Bash(python -m araclar.yorumlar insana:*)"
     ],
     "ask": [
       "Bash(python -m araclar.onayla:*)",
-      "Bash(python -m araclar.yayinla:*)"
+      "Bash(python -m araclar.yayinla:*)",
+      "Bash(python -m araclar.yorumlar gonder:*)",
+      "Bash(python -m araclar.yorumlar atla:*)"
     ],
     "deny": [
       "Read(./.env)",
-      "Bash(cat .env)"
+      "Bash(cat .env)",
+      "Edit(./yerel/**)",
+      "Write(./yerel/**)"
     ]
   },
   "hooks": {

@@ -15,6 +15,7 @@ Akış: **plan → taslak → editör incelemesi → insan onayı → yayın →
 | 1 | `teknik-uzman` | API, token, yayın hataları, kod | `araclar/` |
 | + | `strateji-planlayici` | Haftalık takvim | `icerik/takvim/YYYY-Www.md` |
 | + | `marka-editoru` | Marka/dil/hukuk incelemesi | gönderi (`durum: incelendi`) |
+| + | `musteri-iliskileri` | Yorum sınıflandırma ve yanıt taslağı | `yerel/yorumlar.json` (CLI ile) |
 
 Alt ajanlar birbirini çağıramaz; koordinasyonu ana oturum yapar.
 Sıra: strateji → hook → senarist → (tasarımcı ∥ YZ üretici, türe göre) → editör.
@@ -26,12 +27,14 @@ Sıra: strateji → hook → senarist → (tasarımcı ∥ YZ üretici, türe g�
 - `/onayla <kimlik...>` — yalnızca insan çağırabilir; onaydan sonra hemen paylaşmayı teklif eder (test dönemi akışı).
 - `/yayinla [--id kimlik ...]` — yalnızca insan çağırabilir; onaylı ve zamanı gelmiş (veya `--id` ile seçilen) gönderileri paylaşır. Zamanlanmış otomatik yayın henüz yok.
 - `/rapor [gün]` — analist.
+- `/yorumlar [gün]` — yalnızca insan çağırabilir; yorumları çeker, taslak hazırlatır, onaylananları gönderir.
 
 ## Gönderi durumu
 `taslak → incelendi → onaylandi → yayinlandi` (veya `hata`).
 - Ajanlar en fazla `incelendi` yapabilir. `onaylandi`, `onaylayan`, `onay_tarihi`, `yayin` alanlarını
   yalnızca `araclar.onayla` / `araclar.yayinla` yazar; `.claude/hooks/onay_korumasi.py` elle yazmayı engeller.
 - Hikâyeler (`tur: hikaye`, Instagram/Facebook): `metin` boş, tek medya; diğer türler gibi insan onayından geçer.
+- Yorumlar (`araclar/yorumlar.py`): `yeni → taslak | insana → gonderildi | atlandi`. Kişisel veri içerir; git dışı `yerel/yorumlar.json`'da tutulur, 30 gün sonra silinir. Ajanlar dosyayı düzenleyemez, yanıt gönderemez.
 - Biçim örneği: `icerik/ornek-gonderi.md`. Kurallar: `araclar/icerik.py` → `dogrula`.
 
 ## Geliştirme

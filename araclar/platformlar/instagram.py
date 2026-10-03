@@ -92,3 +92,42 @@ def metrikler(sonuc: dict) -> dict:
     except PlatformHatasi as e:  # bazı medya türleri tüm metrikleri desteklemez
         veri["not"] = f"içgörüler alınamadı: {e}"
     return veri
+
+
+# --- Yorumlar (instagram_manage_comments izni gerekir) ---
+
+def yorumlari_getir(sinir) -> list[dict]:
+    """`sinir` (aware datetime) sonrasındaki, henüz yanıtlanmamış yorumlar."""
+    import datetime as dt
+
+    tok = meta.token()
+    kendi = istek("GET", f"{meta.taban()}/{_kullanici()}",
+                  params={"fields": "username", "access_token": tok})["username"]
+    medyalar = istek("GET", f"{meta.taban()}/{_kullanici()}/media", params={
+        "fields": "id,caption,permalink,comments_count", "limit": 25, "access_token": tok,
+    }).get("data", [])
+    sonuc = []
+    for m in medyalar:
+        if not m.get("comments_count"):
+            continue
+        yorumlar = istek("GET", f"{meta.taban()}/{m['id']}/comments", params={
+            "fields": "id,text,username,timestamp,replies{username}", "limit": 50, "access_token": tok,
+        }).get("data", [])
+        for y in yorumlar:
+            tarih = dt.datetime.strptime(y["timestamp"], "%Y-%m-%dT%H:%M:%S%z")
+            yanitlayanlar = {r.get("username") for r in (y.get("replies") or {}).get("data", [])}
+            if tarih < sinir or y.get("username") == kendi or kendi in yanitlayanlar:
+                continue
+            sonuc.append({
+                "platform_id": y["id"], "gonderi_id": m["id"],
+                "gonderi_ozeti": (m.get("caption") or "")[:80], "gonderi_url": m.get("permalink"),
+                "yazar": y.get("username"), "metin": y.get("text", ""),
+                "tarih": tarih.isoformat(),
+            })
+    return sonuc
+
+
+def yorum_yanitla(yorum_id: str, metin: str) -> dict:
+    s = istek("POST", f"{meta.taban()}/{yorum_id}/replies",
+              data={"message": metin, "access_token": meta.token()})
+    return {"yanit_id": s["id"]}

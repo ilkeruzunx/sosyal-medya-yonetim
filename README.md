@@ -13,6 +13,7 @@ Instagram, Facebook, YouTube ve TikTok için içerik planlar, yazar, denetler, (
  1. kat  teknik-uzman ────────── API, token, yayın hataları                 │
  +       strateji-planlayici ─── haftalık takvim ◄──────────────────────────┘
  +       marka-editoru ───────── onay öncesi son kontrol
+ +       musteri-iliskileri ──── yorum yanıt taslakları (/yorumlar, onayınızla gönderilir)
 
  /haftalik-plan → strateji → hook → senarist → tasarımcı ∥ YZ üretici → editör   (durum: incelendi)
  siz: medya URL'lerini ekleyin → /onayla <kimlik>                                (durum: onaylandi)
@@ -41,6 +42,13 @@ Yalnızca içerik üretimi için API bilgisi gerekmez; `.env` yalnızca `/yayinl
 Claude Code'u web/mobil üzerinden kullanıyorsanız `.env` yerine ortam (environment) ayarlarındaki
 gizli değişkenleri kullanın ve ağ politikasının `graph.facebook.com`, `*.googleapis.com`,
 `open.tiktokapis.com` alan adlarına izin verdiğinden emin olun.
+
+## Yorum yanıtları
+`/yorumlar` Instagram, Facebook ve YouTube'daki yanıtlanmamış yorumları çeker; `musteri-iliskileri` ajanı
+taslak yazar, şikâyet/fiyat/kişisel veri gibi hassas yorumları size bırakır. Siz seçtiklerinizi onaylayınca gönderilir.
+TikTok yorumları ve tüm platformlardaki DM'ler henüz desteklenmiyor. Yorumlar kişisel veri içerdiği için
+git'e girmeyen `yerel/` klasöründe tutulur ve 30 gün sonra silinir. Önce marka rehberindeki
+"Sık sorulan sorular" bölümünü doldurun.
 
 ## Güvenlik önlemleri
 - Ajanlar hiçbir gönderiyi onaylayamaz veya yayınlayamaz: `/onayla` ve `/yayinla` yalnızca sizin tarafınızdan çağrılabilir,

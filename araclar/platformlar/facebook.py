@@ -67,3 +67,40 @@ def metrikler(sonuc: dict) -> dict:
         "yorum": s.get("comments", {}).get("summary", {}).get("total_count"),
         "paylasim": s.get("shares", {}).get("count", 0),
     }
+
+
+# --- Yorumlar (pages_read_user_content + pages_manage_engagement izinleri gerekir) ---
+
+def yorumlari_getir(sinir) -> list[dict]:
+    """`sinir` (aware datetime) sonrasındaki, sayfanın henüz yanıtlamadığı yorumlar."""
+    import datetime as dt
+
+    tok, sayfa = meta.token(), _sayfa()
+    gonderiler = istek("GET", f"{meta.taban()}/{sayfa}/posts", params={
+        "fields": "id,message,permalink_url", "limit": 25, "access_token": tok,
+    }).get("data", [])
+    sonuc = []
+    for p in gonderiler:
+        yorumlar = istek("GET", f"{meta.taban()}/{p['id']}/comments", params={
+            "fields": "id,message,from,created_time,comments{from}", "filter": "toplevel",
+            "limit": 50, "access_token": tok,
+        }).get("data", [])
+        for y in yorumlar:
+            tarih = dt.datetime.strptime(y["created_time"], "%Y-%m-%dT%H:%M:%S%z")
+            yazar = y.get("from") or {}
+            yanitlayanlar = {(c.get("from") or {}).get("id") for c in (y.get("comments") or {}).get("data", [])}
+            if tarih < sinir or yazar.get("id") == sayfa or sayfa in yanitlayanlar:
+                continue
+            sonuc.append({
+                "platform_id": y["id"], "gonderi_id": p["id"],
+                "gonderi_ozeti": (p.get("message") or "")[:80], "gonderi_url": p.get("permalink_url"),
+                "yazar": yazar.get("name", "(gizli)"), "metin": y.get("message", ""),
+                "tarih": tarih.isoformat(),
+            })
+    return sonuc
+
+
+def yorum_yanitla(yorum_id: str, metin: str) -> dict:
+    s = istek("POST", f"{meta.taban()}/{yorum_id}/comments",
+              data={"message": metin, "access_token": meta.token()})
+    return {"yanit_id": s["id"]}

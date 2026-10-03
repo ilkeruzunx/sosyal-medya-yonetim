@@ -43,6 +43,14 @@
 - Sağlık/tedavi iddiası.
 - İzinsiz kişi veya çocuk görüntüsü; lisanssız müzik/görsel.
 
+## Sık sorulan sorular (yorum yanıtları için)
+> `musteri-iliskileri` ajanı yalnızca buradaki bilgilere dayanarak yanıt verir; burada olmayan
+> fiyat/stok/teslimat sorularını size bırakır.
+- Nasıl sipariş verebilirim? → [DOLDURUN]
+- Nereye gönderim yapıyorsunuz? → [DOLDURUN]
+- Çiftliği ziyaret edebilir miyim? → [DOLDURUN]
+- Fiyatlar? → [DOLDURUN — ör. "Güncel fiyatlar için DM'den yazabilirsin"]
+
 ## Görsel kimlik
 - Renkler: [DOLDURUN]
 - Yazı tipi: [DOLDURUN]

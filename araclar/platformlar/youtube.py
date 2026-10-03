@@ -17,6 +17,7 @@ from .ortak import ortam
 KAPSAMLAR = [
     "https://www.googleapis.com/auth/youtube.upload",
     "https://www.googleapis.com/auth/youtube.readonly",
+    "https://www.googleapis.com/auth/youtube.force-ssl",  # yorum yanıtlama
 ]
 
 
@@ -92,3 +93,40 @@ def metrikler(sonuc: dict) -> dict:
         "begeni": int(s.get("likeCount", 0)),
         "yorum": int(s.get("commentCount", 0)),
     }
+
+
+# --- Yorumlar (youtube.force-ssl kapsamı gerekir) ---
+
+def yorumlari_getir(sinir) -> list[dict]:
+    """`sinir` (aware datetime) sonrasındaki, kanalın henüz yanıtlamadığı yorumlar."""
+    import datetime as dt
+
+    servis = _servis()
+    kanal = servis.channels().list(part="id", mine=True).execute()["items"][0]["id"]
+    yanit = servis.commentThreads().list(
+        part="snippet,replies", allThreadsRelatedToChannelId=kanal,
+        maxResults=50, order="time", textFormat="plainText",
+    ).execute()
+    sonuc = []
+    for t in yanit.get("items", []):
+        ust = t["snippet"]["topLevelComment"]["snippet"]
+        tarih = dt.datetime.fromisoformat(ust["publishedAt"].replace("Z", "+00:00"))
+        yanitlayanlar = {r["snippet"].get("authorChannelId", {}).get("value")
+                         for r in (t.get("replies") or {}).get("comments", [])}
+        if tarih < sinir or ust.get("authorChannelId", {}).get("value") == kanal or kanal in yanitlayanlar:
+            continue
+        vid = t["snippet"].get("videoId")
+        sonuc.append({
+            "platform_id": t["id"], "gonderi_id": vid, "gonderi_ozeti": "",
+            "gonderi_url": f"https://www.youtube.com/watch?v={vid}" if vid else None,
+            "yazar": ust.get("authorDisplayName"), "metin": ust.get("textDisplay", ""),
+            "tarih": tarih.isoformat(),
+        })
+    return sonuc
+
+
+def yorum_yanitla(yorum_id: str, metin: str) -> dict:
+    s = _servis().comments().insert(
+        part="snippet", body={"snippet": {"parentId": yorum_id, "textOriginal": metin}},
+    ).execute()
+    return {"yanit_id": s["id"]}

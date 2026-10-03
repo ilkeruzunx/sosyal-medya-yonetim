@@ -170,3 +170,64 @@ def test_instagram_hikaye_istekleri(monkeypatch):
     assert olustur["media_type"] == "STORIES" and olustur["video_url"] == "https://a/klip.mp4"
     assert "caption" not in olustur
     assert sonuc == {"platform_id": "m1", "url": None, "tur": "hikaye"}
+
+
+@pytest.fixture
+def yorum_deposu(tmp_path, monkeypatch):
+    from araclar import yorumlar
+    monkeypatch.setattr(yorumlar, "DEPO", tmp_path / "yorumlar.json")
+    return yorumlar
+
+
+def test_yorum_akisi(yorum_deposu, monkeypatch):
+    y = yorum_deposu
+    gonderilen = []
+
+    class Sahte:
+        @staticmethod
+        def yorumlari_getir(_):
+            return [{"platform_id": "c1", "gonderi_id": "m1", "gonderi_ozeti": "", "gonderi_url": None,
+                     "yazar": "ayse", "metin": "Sipariş nasıl veriliyor?", "tarih": "2026-10-01T10:00:00+00:00"}]
+
+        @staticmethod
+        def yorum_yanitla(yid, metin):
+            gonderilen.append((yid, metin))
+            return {"yanit_id": "r1"}
+
+    monkeypatch.setattr(y, "istemci", lambda p: Sahte)
+    monkeypatch.setattr(y, "PLATFORMLAR", ["instagram"])
+    assert y.main(["cek"]) == 0
+    assert y.main(["cek"]) == 0  # ikinci çekimde tekrar eklenmez
+    assert len(y.yukle()["yorumlar"]) == 1
+
+    assert y.main(["gonder", "1", "--ad", "T", "--gercek"]) == 1  # taslaksız gönderilemez
+    assert y.main(["taslak", "1", "--kategori", "soru", "--yanit", "DM'den yazabilirsin 🌾"]) == 0
+    assert y.main(["gonder", "1", "--ad", "T"]) == 0  # kuru çalışma
+    assert gonderilen == []
+    assert y.main(["gonder", "1", "--ad", "T", "--gercek"]) == 0
+    assert gonderilen == [("c1", "DM'den yazabilirsin 🌾")]
+    kayit = y.yukle()["yorumlar"][0]
+    assert kayit["durum"] == "gonderildi" and kayit["onaylayan"] == "T"
+    with pytest.raises(SystemExit):
+        y.main(["taslak", "1", "--kategori", "soru", "--yanit", "x"])
+
+
+def test_yorum_insana_ve_eski_kayit_temizligi(yorum_deposu, monkeypatch):
+    y = yorum_deposu
+    y.kaydet({"sayac": 2, "yorumlar": [
+        {"no": 1, "platform": "instagram", "platform_id": "a", "durum": "atlandi",
+         "cekilme": "2020-01-01T00:00:00+00:00", "yazar": "x", "metin": "eski"},
+        {"no": 2, "platform": "instagram", "platform_id": "b", "durum": "yeni",
+         "cekilme": "2020-01-01T00:00:00+00:00", "yazar": "y", "metin": "kargom gelmedi"},
+    ]})
+    assert y.main(["insana", "2", "--kategori", "sikayet", "--neden", "teslimat şikâyeti"]) == 0
+
+    class Bos:
+        @staticmethod
+        def yorumlari_getir(_):
+            return []
+
+    monkeypatch.setattr(y, "istemci", lambda p: Bos)
+    y.main(["cek"])
+    kalan = y.yukle()["yorumlar"]
+    assert [k["no"] for k in kalan] == [2] and kalan[0]["durum"] == "insana"
