@@ -1,1 +1,1 @@
-"""Çiftlik İletişim sosyal medya araçları."""
+"""@ilkeruzunx sosyal medya araçları."""

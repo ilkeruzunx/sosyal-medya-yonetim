@@ -1,6 +1,6 @@
 # sosyal-medya-yonetim
 
-Çiftlik İletişim sosyal medya içerik, planlama ve yönetim projesi — Claude Code ajan ekibiyle
+@ilkeruzunx — telefon ve teknoloji içerikleri için sosyal medya yönetim projesi. Claude Code ajan ekibiyle
 Instagram, Facebook, YouTube ve TikTok için içerik planlar, yazar, denetler, (onayınızla) yayınlar ve raporlar.
 
 ```
