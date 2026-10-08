@@ -2,7 +2,7 @@
 id: 2026-10-13-instagram-telefon-kac-yilda
 platform: instagram
 tur: gorsel
-durum: incelendi
+durum: ertelendi
 planlanan_tarih: 2026-10-13T12:30:00+03:00
 konu: Telefonunu kaç yılda bir değiştiriyorsun? (soru görseli)
 kampanya: ""

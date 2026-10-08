@@ -2,7 +2,7 @@
 id: 2026-10-15-facebook-ikinci-el-kontrol-listesi
 platform: facebook
 tur: gorsel
-durum: incelendi
+durum: ertelendi
 planlanan_tarih: 2026-10-15T20:30:00+03:00
 konu: İkinci el telefon alırken 7 maddelik kontrol listesi (tek görsel)
 kampanya: ikinci-el-rehberi

@@ -2,7 +2,7 @@
 id: 2026-10-15-youtube-ikinci-el-tanitim
 platform: youtube
 tur: shorts
-durum: taslak
+durum: ertelendi
 planlanan_tarih: 2026-10-15T17:00:00+03:00
 konu: Stoktaki ikinci el cihazın Shorts tanıtımı
 kampanya: ikinci-el-satis

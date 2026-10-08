@@ -2,7 +2,7 @@
 id: 2026-10-18-tiktok-sifir-mi-ikinci-el-mi
 platform: tiktok
 tur: video
-durum: taslak
+durum: ertelendi
 planlanan_tarih: 2026-10-18T21:30:00+03:00
 konu: Sıfır mı ikinci el mi, TikTok uyarlaması
 kampanya: sifir-ikinci-el

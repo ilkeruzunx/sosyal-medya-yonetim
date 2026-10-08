@@ -2,7 +2,7 @@
 id: 2026-10-17-youtube-sifir-mi-ikinci-el-mi
 platform: youtube
 tur: video
-durum: taslak
+durum: ertelendi
 planlanan_tarih: 2026-10-17T13:00:00+03:00
 konu: Aynı bütçeyle sıfır orta segment mi, bir üst modelin ikinci eli mi
 kampanya: sifir-ikinci-el

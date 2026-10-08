@@ -2,7 +2,7 @@
 id: 2026-10-12-facebook-one-ui-9-hazirlik
 platform: facebook
 tur: video
-durum: incelendi
+durum: ertelendi
 planlanan_tarih: 2026-10-12T20:30:00+03:00
 konu: One UI 9 gelmeden önce yapılacak 4 hazırlık (Facebook uyarlaması)
 kampanya: one-ui-9

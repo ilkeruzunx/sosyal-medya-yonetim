@@ -2,7 +2,7 @@
 id: 2026-10-12-tiktok-one-ui-9-hazirlik
 platform: tiktok
 tur: video
-durum: incelendi
+durum: ertelendi
 planlanan_tarih: 2026-10-12T21:30:00+03:00
 konu: One UI 9 gelmeden önce 4 hazırlık
 kampanya: one-ui-9

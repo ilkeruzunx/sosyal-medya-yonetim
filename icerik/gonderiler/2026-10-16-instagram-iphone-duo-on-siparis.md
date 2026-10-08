@@ -2,7 +2,7 @@
 id: 2026-10-16-instagram-iphone-duo-on-siparis
 platform: instagram
 tur: reels
-durum: taslak
+durum: ertelendi
 planlanan_tarih: 2026-10-16T15:30:00+03:00
 konu: "iPhone Duo ön sipariş, bilmen gereken 3 şey (HIZLI haber)"
 kampanya: iphone-duo

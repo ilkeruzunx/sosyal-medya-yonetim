@@ -2,7 +2,7 @@
 id: 2026-10-14-instagram-ikinci-el-tanitim
 platform: instagram
 tur: reels
-durum: taslak
+durum: ertelendi
 planlanan_tarih: 2026-10-14T19:30:00+03:00
 konu: Stoktaki ikinci el [MODEL] tanıtımı (yer tutuculu; cihaz bilgisi bekleniyor)
 kampanya: ikinci-el-satis

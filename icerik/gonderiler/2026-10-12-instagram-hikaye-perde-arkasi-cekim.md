@@ -2,7 +2,7 @@
 id: 2026-10-12-instagram-hikaye-perde-arkasi-cekim
 platform: instagram
 tur: hikaye
-durum: incelendi
+durum: ertelendi
 planlanan_tarih: 2026-10-12T13:00:00+03:00
 konu: Perde arkası, haftanın çekim masası (ikinci el cihaz, şarj aletleri)
 kampanya: ikinci-el-satis

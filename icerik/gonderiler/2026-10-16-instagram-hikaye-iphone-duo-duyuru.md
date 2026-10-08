@@ -2,7 +2,7 @@
 id: 2026-10-16-instagram-hikaye-iphone-duo-duyuru
 platform: instagram
 tur: hikaye
-durum: taslak
+durum: ertelendi
 planlanan_tarih: 2026-10-16T15:50:00+03:00
 konu: iPhone Duo ön sipariş Reels'inin hikâye duyurusu
 kampanya: iphone-duo

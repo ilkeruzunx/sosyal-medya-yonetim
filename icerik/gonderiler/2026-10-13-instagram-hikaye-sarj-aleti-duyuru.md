@@ -2,7 +2,7 @@
 id: 2026-10-13-instagram-hikaye-sarj-aleti-duyuru
 platform: instagram
 tur: hikaye
-durum: incelendi
+durum: ertelendi
 planlanan_tarih: 2026-10-13T19:50:00+03:00
 konu: Şarj aleti rehberi carousel duyurusu
 kampanya: aksesuar-rehberi

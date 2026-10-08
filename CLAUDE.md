@@ -33,6 +33,7 @@ Sıra: strateji → hook → senarist → (tasarımcı ∥ YZ üretici, türe g�
 `taslak → incelendi → onaylandi → yayinlandi` (veya `hata`).
 - Ajanlar en fazla `incelendi` yapabilir. `onaylandi`, `onaylayan`, `onay_tarihi`, `yayin` alanlarını
   yalnızca `araclar.onayla` / `araclar.yayinla` yazar; `.claude/hooks/onay_korumasi.py` elle yazmayı engeller.
+- `ertelendi`: bu hafta yapılmayacak gönderi (silinmez); ajanlar yazabilir, `dogrula` içerik kontrollerini atlar, onaylanamaz/yayınlanmaz — yeniden ele almak için `taslak`a döndürün.
 - Hikâyeler (`tur: hikaye`, Instagram/Facebook): `metin` boş, tek medya; diğer türler gibi insan onayından geçer.
 - Gelen kutusu (`araclar/mesajlar.py`, yorum + DM): `yeni → taslak | insana → gonderildi | atlandi | suresi_doldu`. DM'ler yalnızca son mesajdan sonraki 24 saat içinde yanıtlanabilir. Kişisel veri içerir; git dışı `yerel/mesajlar.json`'da tutulur, 30 gün sonra silinir. Ajanlar dosyayı okuyamaz/düzenleyemez (yalnızca CLI), yanıt gönderemez.
 - Biçim örneği: `icerik/ornek-gonderi.md`. Kurallar: `araclar/icerik.py` → `dogrula`.

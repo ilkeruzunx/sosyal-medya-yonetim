@@ -2,7 +2,7 @@
 id: 2026-10-13-facebook-sarj-aleti-rehberi
 platform: facebook
 tur: gorsel
-durum: incelendi
+durum: ertelendi
 planlanan_tarih: 2026-10-13T20:30:00+03:00
 konu: "Şarj aleti rehberi: W, PD, PPS (tek görsel infografik)"
 kampanya: aksesuar-rehberi

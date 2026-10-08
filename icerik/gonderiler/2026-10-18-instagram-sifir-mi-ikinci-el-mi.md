@@ -2,7 +2,7 @@
 id: 2026-10-18-instagram-sifir-mi-ikinci-el-mi
 platform: instagram
 tur: reels
-durum: taslak
+durum: ertelendi
 planlanan_tarih: 2026-10-18T20:00:00+03:00
 konu: "Aynı bütçe, sıfır mı ikinci el mi? Kime hangisi uygun"
 kampanya: sifir-ikinci-el

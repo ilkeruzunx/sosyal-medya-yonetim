@@ -295,3 +295,81 @@ def test_kayit_insana_ve_eski_kayit_temizligi(gelen, monkeypatch):
     m.main(["cek"])
     kalan = m.yukle()["kayitlar"]
     assert [k["no"] for k in kalan] == [2] and kalan[0]["durum"] == "insana"
+
+
+# --- Yer tutucu kontrolü ---
+
+@pytest.mark.parametrize("degisiklik, beklenen", [
+    ({"metin": "Yeni [MODEL] geldi"}, "[MODEL]"),
+    ({"metin": "Pil sağlığı [PİL %] seviyesinde"}, "[PİL %]"),
+    ({"metin": "Sadece [FİYAT] TL"}, "[FİYAT]"),
+    ({"metin": "Satır\n[stok cihaz görünürse bu satırı ekle]\nson"}, "[stok cihaz görünürse"),
+    ({"metin": "[ŞARJ ĞÜÖÇ]"}, "[ŞARJ ĞÜÖÇ]"),
+    ({"platform": "youtube", "tur": "video", "baslik": "[MODEL] incelemesi"}, "'baslik' alanında"),
+    ({"platform": "facebook", "tur": "baglanti", "medya": [],
+      "baglanti": "[APPLE-RESMI-BAGLANTI: destek sayfası]"}, "[APPLE-RESMI-BAGLANTI"),
+    ({"platform": "facebook", "tur": "baglanti", "medya": [],
+      "baglanti": "[YOUTUBE-VIDEO-BAGLANTISI]"}, "'baglanti' geçerli"),
+    ({"baglanti": "ftp://ornek.com/x"}, "'baglanti' geçerli"),
+    ({"baglanti": "ornek.com"}, "'baglanti' geçerli"),
+])
+def test_yer_tutucu_hatalari(degisiklik, beklenen):
+    g = oku(ORNEK)
+    g.veri.update(degisiklik)
+    assert any(beklenen in h for h in dogrula(g)), dogrula(g)
+
+
+def test_yer_tutucu_yoksa_ve_gecerli_baglanti():
+    g = oku(ORNEK)
+    g.veri.update(platform="facebook", tur="baglanti", medya=[],
+                  baglanti="https://support.apple.com/tr-tr/101575",
+                  metin="Ayrıntılar için [Apple destek](https://support.apple.com) sayfasına bak.")
+    assert dogrula(g) == []
+
+
+def test_govdedeki_yer_tutucu_serbest():
+    g = oku(ORNEK)
+    g.govde += "\n## Üretim paketi\n[MODEL] çekimi, [PİL %] ekranı\n"
+    assert dogrula(g) == []
+
+
+# --- Ertelendi durumu ---
+
+def test_ertelendi_gecerli_durum():
+    assert "ertelendi" in icerik.DURUMLAR
+    g = oku(ORNEK)
+    g.veri.update(durum="ertelendi", medya=[], metin="[MODEL] [FİYAT]",
+                  baglanti="[YOUTUBE-VIDEO-BAGLANTISI]")
+    assert dogrula(g) == []
+
+
+def test_ertelendi_ozette_gorunur_hata_saymaz(klasor, capsys):
+    from araclar import dogrula as dogrula_cli
+    g = _kopya(klasor, durum="ertelendi", medya=[])
+    assert dogrula_cli.main([str(g.yol), "--ozet"]) == 0
+    cikti = capsys.readouterr().out
+    assert "ertelendi: 1" in cikti and g.kimlik in cikti and "0 hatalı" in cikti
+
+
+def test_ertelendi_onaylanamaz(klasor, capsys):
+    g = _kopya(klasor, durum="ertelendi")
+    assert onayla.main([g.kimlik, "--ad", "Test"]) == 1
+    assert "ertelendi" in capsys.readouterr().out
+    sonuc = oku(g.yol)
+    assert sonuc.durum == "ertelendi" and "onaylayan" not in sonuc.veri
+
+
+def test_ertelendi_yayinlanmaz(klasor, monkeypatch):
+    g = _kopya(klasor, durum="ertelendi", planlanan_tarih="2020-01-01T10:00:00+03:00")
+    monkeypatch.setattr(yayinla, "istemci", lambda p: pytest.fail("ertelenen gönderi yayınlandı"))
+    assert yayinla.main(["--gercek"]) == 0
+    assert yayinla.main(["--id", g.kimlik, "--gercek"]) == 1
+    assert oku(g.yol).durum == "ertelendi"
+
+
+def test_kanca_ertelendi_serbest():
+    yol = str(KOK / "icerik" / "gonderiler" / "x.md")
+    assert _kanca({"file_path": yol, "old_string": "durum: taslak",
+                   "new_string": "durum: ertelendi"}) == 0
+    assert _kanca({"file_path": yol, "old_string": "durum: ertelendi",
+                   "new_string": "durum: taslak"}) == 0

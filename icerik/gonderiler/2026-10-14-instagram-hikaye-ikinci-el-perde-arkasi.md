@@ -2,7 +2,7 @@
 id: 2026-10-14-instagram-hikaye-ikinci-el-perde-arkasi
 platform: instagram
 tur: hikaye
-durum: taslak
+durum: ertelendi
 planlanan_tarih: 2026-10-14T13:00:00+03:00
 konu: Perde arkası, ikinci el cihazın pil sağlığı ekranı
 kampanya: ikinci-el-satis

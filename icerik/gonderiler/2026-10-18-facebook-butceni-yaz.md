@@ -2,7 +2,7 @@
 id: 2026-10-18-facebook-butceni-yaz
 platform: facebook
 tur: metin
-durum: incelendi
+durum: ertelendi
 planlanan_tarih: 2026-10-18T19:00:00+03:00
 konu: Bütçeni ve önceliğini yaz, sana uygun telefonları söyleyeyim
 kampanya: ""

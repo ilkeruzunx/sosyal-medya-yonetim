@@ -2,7 +2,7 @@
 id: 2026-10-16-youtube-iphone-duo-on-siparis
 platform: youtube
 tur: shorts
-durum: taslak
+durum: ertelendi
 planlanan_tarih: 2026-10-16T18:30:00+03:00
 konu: iPhone Duo ön sipariş haberi, bilmen gereken 3 şey
 kampanya: iphone-duo

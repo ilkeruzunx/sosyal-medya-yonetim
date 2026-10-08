@@ -2,7 +2,7 @@
 id: 2026-10-14-facebook-ikinci-el-tanitim
 platform: facebook
 tur: video
-durum: taslak
+durum: ertelendi
 planlanan_tarih: 2026-10-14T20:30:00+03:00
 konu: Stoktaki ikinci el cihaz tanıtımı (Facebook uyarlaması)
 kampanya: ikinci-el-satis

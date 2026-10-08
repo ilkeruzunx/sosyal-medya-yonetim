@@ -2,7 +2,7 @@
 id: 2026-10-12-instagram-hikaye-one-ui-9-duyuru
 platform: instagram
 tur: hikaye
-durum: incelendi
+durum: ertelendi
 planlanan_tarih: 2026-10-12T19:50:00+03:00
 konu: One UI 9 hazırlık Reels'inin hikâye duyurusu
 kampanya: one-ui-9

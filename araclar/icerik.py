@@ -6,6 +6,7 @@ import datetime as dt
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
+from urllib.parse import urlparse
 
 import yaml
 
@@ -19,7 +20,9 @@ TURLER = {
     "youtube": {"video", "shorts"},
     "tiktok": {"video"},
 }
-DURUMLAR = ["taslak", "incelendi", "onaylandi", "yayinlandi", "hata"]
+DURUMLAR = ["taslak", "incelendi", "onaylandi", "yayinlandi", "hata", "ertelendi"]
+# Bu durumdaki gönderiler bekletilir; içerik kontrolleri atlanır, onaylanamaz ve yayınlanmaz.
+ERTELENDI = "ertelendi"
 
 # Platform sınırları (karakter / adet)
 METIN_SINIRI = {"instagram": 2200, "facebook": 63206, "youtube": 5000, "tiktok": 2200}
@@ -29,6 +32,22 @@ HASHTAG_SINIRI = {"instagram": 30, "tiktok": 30, "youtube": 15}
 VIDEO_UZANTILARI = (".mp4", ".mov")
 
 _ON_BILGI = re.compile(r"\A---\n(.*?)\n---\n?(.*)\Z", re.DOTALL)
+# Köşeli parantezli yer tutucu: [MODEL], [PİL %], [stok cihaz görünürse ...]
+# Markdown bağlantısı ([yazı](url)) hariç tutulur.
+_YER_TUTUCU = re.compile(r"\[[^\]\n]+\](?!\()")
+
+
+def yer_tutucular(yazi: str) -> list[str]:
+    """Metindeki köşeli parantezli yer tutucuları sırayla döndürür."""
+    return _YER_TUTUCU.findall(yazi or "")
+
+
+def gecerli_url_mi(deger: str) -> bool:
+    """http:// veya https:// ile başlayan, alan adı içeren ve boşluk/köşeli parantez içermeyen URL."""
+    if not deger or any(c.isspace() for c in deger) or "[" in deger or "]" in deger:
+        return False
+    parca = urlparse(deger)
+    return parca.scheme in {"http", "https"} and bool(parca.netloc)
 
 
 @dataclass
@@ -102,6 +121,11 @@ def tumunu_oku(klasor: Path = GONDERI_KLASORU) -> list[Gonderi]:
 def dogrula(g: Gonderi) -> list[str]:
     """Gönderiyi kurallara göre kontrol eder; hata mesajlarının listesini döndürür."""
     h: list[str] = []
+    if g.durum == ERTELENDI:
+        # Ertelenen gönderi bekletiliyor: yalnızca kimlik kontrol edilir, içerik kontrolleri atlanır.
+        if not g.veri.get("id"):
+            h.append("'id' alanı eksik")
+        return h
     zorunlu = ["id", "platform", "tur", "durum", "planlanan_tarih"]
     if g.tur != "hikaye":  # hikâyelerde paylaşım metni yoktur
         zorunlu.append("metin")
@@ -152,6 +176,15 @@ def dogrula(g: Gonderi) -> list[str]:
         h.append("TikTok videosu doğrulanmış alan adında https:// URL olmalı")
     if g.platform == "facebook" and g.tur == "baglanti" and not g.veri.get("baglanti"):
         h.append("'baglanti' türü için 'baglanti' alanı zorunlu")
+
+    for alan, deger in (("metin", g.metin), ("baslik", baslik)):
+        for yt in yer_tutucular(deger):
+            h.append(f"'{alan}' alanında doldurulmamış yer tutucu var: {yt}")
+    baglanti = str(g.veri.get("baglanti", "") or "").strip()
+    if baglanti and not gecerli_url_mi(baglanti):
+        bulunan = yer_tutucular(baglanti)
+        ek = f" (yer tutucu: {bulunan[0]})" if bulunan else ""
+        h.append(f"'baglanti' geçerli bir http:// veya https:// URL olmalı{ek}: {baglanti}")
 
     if g.durum in {"onaylandi", "yayinlandi"} and not g.veri.get("onaylayan"):
         h.append("onaylı gönderide 'onaylayan' alanı olmalı (yalnızca /onayla ile ekleyin)")

@@ -27,6 +27,11 @@ def main(argv: list[str] | None = None) -> int:
             print(f"✗ {k}: bulunamadı")
             hata += 1
             continue
+        if g.durum == "ertelendi":
+            print(f"✗ {k}: gönderi ertelendi — onaylamak için önce durumu 'taslak'a döndürün "
+                  "ve marka-editoru incelemesinden geçirin")
+            hata += 1
+            continue
         if g.durum != "incelendi":
             print(f"✗ {k}: durum '{g.durum}' — önce marka-editoru incelemeli (durum: incelendi)")
             hata += 1

@@ -2,7 +2,7 @@
 id: 2026-10-15-instagram-hikaye-kontrol-listesi-duyuru
 platform: instagram
 tur: hikaye
-durum: incelendi
+durum: ertelendi
 planlanan_tarih: 2026-10-15T19:50:00+03:00
 konu: İkinci el kontrol listesi carousel duyurusu
 kampanya: ikinci-el-rehberi

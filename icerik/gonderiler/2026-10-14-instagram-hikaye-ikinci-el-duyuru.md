@@ -2,7 +2,7 @@
 id: 2026-10-14-instagram-hikaye-ikinci-el-duyuru
 platform: instagram
 tur: hikaye
-durum: taslak
+durum: ertelendi
 planlanan_tarih: 2026-10-14T19:50:00+03:00
 konu: İkinci el tanıtım Reels'inin hikâye duyurusu
 kampanya: ikinci-el-satis

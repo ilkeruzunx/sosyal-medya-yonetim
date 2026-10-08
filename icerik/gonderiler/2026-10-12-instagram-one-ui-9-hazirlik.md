@@ -2,7 +2,7 @@
 id: 2026-10-12-instagram-one-ui-9-hazirlik
 platform: instagram
 tur: reels
-durum: incelendi
+durum: ertelendi
 planlanan_tarih: 2026-10-12T19:30:00+03:00
 konu: One UI 9 gelmeden önce yapılacak 4 hazırlık
 kampanya: one-ui-9

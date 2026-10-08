@@ -2,7 +2,7 @@
 id: 2026-10-18-youtube-sifir-mi-ikinci-el-mi
 platform: youtube
 tur: shorts
-durum: taslak
+durum: ertelendi
 planlanan_tarih: 2026-10-18T17:00:00+03:00
 konu: Sıfır mı ikinci el mi, en net karşılaştırma anı
 kampanya: sifir-ikinci-el

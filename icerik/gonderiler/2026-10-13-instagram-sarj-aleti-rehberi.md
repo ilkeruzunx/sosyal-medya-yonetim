@@ -2,7 +2,7 @@
 id: 2026-10-13-instagram-sarj-aleti-rehberi
 platform: instagram
 tur: carousel
-durum: incelendi
+durum: ertelendi
 planlanan_tarih: 2026-10-13T19:30:00+03:00
 konu: Şarj aleti alırken W, PD ve PPS ne demek?
 kampanya: aksesuar-rehberi

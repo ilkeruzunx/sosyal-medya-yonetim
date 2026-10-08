@@ -2,7 +2,7 @@
 id: 2026-10-13-youtube-one-ui-9-hazirlik
 platform: youtube
 tur: shorts
-durum: incelendi
+durum: ertelendi
 planlanan_tarih: 2026-10-13T17:00:00+03:00
 konu: One UI 9 gelmeden önce yapılacak 4 hazırlık
 kampanya: one-ui-9

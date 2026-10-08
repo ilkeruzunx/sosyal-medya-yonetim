@@ -2,7 +2,7 @@
 id: 2026-10-15-instagram-ikinci-el-kontrol-listesi
 platform: instagram
 tur: carousel
-durum: incelendi
+durum: ertelendi
 planlanan_tarih: 2026-10-15T19:30:00+03:00
 konu: İkinci el telefon alırken kontrol edilecek 7 şey
 kampanya: ikinci-el-rehberi

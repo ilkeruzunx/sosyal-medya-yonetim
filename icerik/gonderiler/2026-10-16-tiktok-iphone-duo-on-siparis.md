@@ -2,7 +2,7 @@
 id: 2026-10-16-tiktok-iphone-duo-on-siparis
 platform: tiktok
 tur: video
-durum: taslak
+durum: ertelendi
 planlanan_tarih: 2026-10-16T16:30:00+03:00
 konu: iPhone Duo ön sipariş haberi, TikTok uyarlaması
 kampanya: iphone-duo

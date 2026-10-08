@@ -2,7 +2,7 @@
 id: 2026-10-14-tiktok-ikinci-el-tanitim
 platform: tiktok
 tur: video
-durum: taslak
+durum: ertelendi
 planlanan_tarih: 2026-10-14T21:30:00+03:00
 konu: Stoktaki ikinci el cihazın TikTok tanıtımı
 kampanya: ikinci-el-satis

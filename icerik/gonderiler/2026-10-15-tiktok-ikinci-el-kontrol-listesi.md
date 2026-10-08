@@ -2,7 +2,7 @@
 id: 2026-10-15-tiktok-ikinci-el-kontrol-listesi
 platform: tiktok
 tur: video
-durum: incelendi
+durum: ertelendi
 planlanan_tarih: 2026-10-15T21:30:00+03:00
 konu: İkinci el alırken satıcıya sorulacak 7 şey
 kampanya: ikinci-el-rehberi

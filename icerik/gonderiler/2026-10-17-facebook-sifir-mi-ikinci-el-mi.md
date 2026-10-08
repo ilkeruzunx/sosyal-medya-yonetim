@@ -2,7 +2,7 @@
 id: 2026-10-17-facebook-sifir-mi-ikinci-el-mi
 platform: facebook
 tur: baglanti
-durum: taslak
+durum: ertelendi
 planlanan_tarih: 2026-10-17T16:00:00+03:00
 konu: "Sıfır mı ikinci el mi? YouTube videosunun bağlantısı"
 kampanya: sifir-ikinci-el

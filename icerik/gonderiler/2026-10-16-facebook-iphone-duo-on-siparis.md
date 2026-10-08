@@ -2,7 +2,7 @@
 id: 2026-10-16-facebook-iphone-duo-on-siparis
 platform: facebook
 tur: baglanti
-durum: taslak
+durum: ertelendi
 planlanan_tarih: 2026-10-16T17:30:00+03:00
 konu: "iPhone Duo ön sipariş: Apple resmî sayfasından kısa özet"
 kampanya: iphone-duo

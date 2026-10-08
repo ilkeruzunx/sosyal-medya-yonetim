@@ -2,7 +2,7 @@
 id: 2026-10-18-instagram-hikaye-reels-duyuru
 platform: instagram
 tur: hikaye
-durum: taslak
+durum: ertelendi
 planlanan_tarih: 2026-10-18T20:20:00+03:00
 konu: Sıfır mı ikinci el mi Reels duyurusu
 kampanya: sifir-ikinci-el
