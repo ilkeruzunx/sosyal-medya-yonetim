@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m araclar.dogrula:*)",
+      "Bash(python -m araclar.analiz:*)",
+      "Bash(python -m pytest:*)",
+      "Bash(python -m araclar.mesajlar cek:*)",
+      "Bash(python -m araclar.mesajlar liste:*)",
+      "Bash(python -m araclar.mesajlar taslak:*)",
+      "Bash(python -m araclar.mesajlar insana:*)"
+    ],
+    "ask": [
+      "Bash(python -m araclar.onayla:*)",
+      "Bash(python -m araclar.yayinla:*)",
+      "Bash(python -m araclar.mesajlar gonder:*)",
+      "Bash(python -m araclar.mesajlar atla:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Bash(cat .env)",
+      "Edit(./yerel/**)",
+      "Write(./yerel/**)",
+      "Read(./yerel/**)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/onay_korumasi.py\""
+          }
+        ]
+      }
+    ]
+  }
+}
