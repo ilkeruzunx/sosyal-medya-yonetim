@@ -1,4 +1,4 @@
-# Çiftlik İletişim — Sosyal Medya Yönetimi
+# @ilkeruzunx — Sosyal Medya Yönetimi (telefon ve teknoloji)
 
 Bu depo, Instagram, Facebook, YouTube ve TikTok hesaplarını bir Claude Code ajan ekibiyle yönetir.
 Akış: **plan → taslak → editör incelemesi → insan onayı → yayın → rapor**.

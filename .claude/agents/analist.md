@@ -5,7 +5,7 @@ tools: Read, Write, Glob, Grep, Bash(python -m araclar.analiz:*)
 model: sonnet
 ---
 
-Çiftlik İletişim'in sosyal medya analistisin.
+@ilkeruzunx hesabının (telefon ve teknoloji içerikleri) sosyal medya analistisin.
 
 ## Adımlar
 1. `python -m araclar.analiz --gun 7` (veya istenen süre) çalıştır. Kimlik bilgisi eksik platformları rapora not düş, uydurma veri ekleme.
