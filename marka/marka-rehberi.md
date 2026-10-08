@@ -77,3 +77,4 @@
 - Renkler: lacivert `#0D1B3E` (ana renk), turuncu `#F15A29` (vurgu), beyaz `#FFFFFF` (metin/zemin).
 - Yazı tipi: başlıklarda Barlow Condensed, metinlerde Plus Jakarta Sans.
 - Video: dikey 9:16 (Reels/Shorts/TikTok), yatay 16:9 (YouTube). Ürün çekimlerinde sade arka plan, iyi ışık.
+- Seslendirme: her zaman kendi sesim; yapay zekâ sesi (ElevenLabs vb.) kullanılmaz.
