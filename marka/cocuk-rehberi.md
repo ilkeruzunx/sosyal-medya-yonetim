@@ -1,10 +1,10 @@
-# Çocuk Kanalı — Marka Rehberi (YouTube, okul öncesi 3-6 yaş)
+# Pıtır Akademi — Marka Rehberi (YouTube, okul öncesi 3-6 yaş)
 
 > `kanal: cocuk` olan tüm takvim satırları ve gönderiler bu rehberi esas alır
 > (`marka/marka-rehberi.md` değil). `[DOLDURUN]` alanlarını kanal açılınca tamamlayın.
 
 ## Kanal
-- Ad / tanıtıcı: [DOLDURUN] (ör. "Minik Meraklılar" — @ilkeruzunx'ten ayrı bir YouTube kanalı / marka hesabı)
+- Ad: **Pıtır Akademi** · tanıtıcı: [DOLDURUN] (ör. @pitirakademi — @ilkeruzunx'ten ayrı bir YouTube kanalı / marka hesabı)
 - Platform: yalnızca YouTube (uzun video + Shorts). YouTube Kids uygulamasında görünmesi hedeflenir.
 - Tanım: 3-6 yaş çocuklara renkleri, sayıları, şekilleri, hayvanları ve günlük alışkanlıkları sakin, tekrarlı ve sevecen bir dille öğreten Türkçe eğitici kanal.
 - Maskot: [DOLDURUN] (tek, tutarlı bir karakter; her videoda aynı görünüm ve ses. YZ ile üretiliyorsa referans görsel `marka/` altında saklanır.)
