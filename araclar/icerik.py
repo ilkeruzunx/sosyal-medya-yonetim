@@ -31,6 +31,12 @@ HASHTAG_SINIRI = {"instagram": 30, "tiktok": 30, "youtube": 15}
 
 VIDEO_UZANTILARI = (".mp4", ".mov")
 
+# Hesap/kanal: "ana" = @ilkeruzunx (varsayılan), "cocuk" = okul öncesi YouTube çocuk kanalı.
+KANALLAR = {"ana", "cocuk"}
+VARSAYILAN_KANAL = "ana"
+# "Çocuklar için yapıldı" videolarda yorumlar kapalıdır; yoruma çağıran ve dışarı yönlendiren ifadeler yasak.
+_COCUK_YASAK = re.compile(r"yorum|https?://|www\.|instagram|tiktok|link", re.IGNORECASE)
+
 _ON_BILGI = re.compile(r"\A---\n(.*?)\n---\n?(.*)\Z", re.DOTALL)
 # Köşeli parantezli yer tutucu: [MODEL], [PİL %], [stok cihaz görünürse ...]
 # Markdown bağlantısı ([yazı](url)) hariç tutulur.
@@ -68,6 +74,10 @@ class Gonderi:
     @property
     def tur(self) -> str:
         return str(self.veri.get("tur", ""))
+
+    @property
+    def kanal(self) -> str:
+        return str(self.veri.get("kanal") or VARSAYILAN_KANAL)
 
     @property
     def durum(self) -> str:
@@ -136,6 +146,10 @@ def dogrula(g: Gonderi) -> list[str]:
         h.append(f"bilinmeyen platform: {g.platform}")
     elif g.platform and g.tur and g.tur not in TURLER[g.platform]:
         h.append(f"{g.platform} için geçersiz tür: {g.tur} (geçerli: {sorted(TURLER[g.platform])})")
+    if g.kanal not in KANALLAR:
+        h.append(f"bilinmeyen kanal: {g.kanal} (geçerli: {sorted(KANALLAR)})")
+    elif g.kanal == "cocuk":
+        h.extend(_cocuk_kontrolleri(g))
     if g.durum and g.durum not in DURUMLAR:
         h.append(f"geçersiz durum: {g.durum}")
     try:
@@ -188,4 +202,23 @@ def dogrula(g: Gonderi) -> list[str]:
 
     if g.durum in {"onaylandi", "yayinlandi"} and not g.veri.get("onaylayan"):
         h.append("onaylı gönderide 'onaylayan' alanı olmalı (yalnızca /onayla ile ekleyin)")
+    return h
+
+
+def _cocuk_kontrolleri(g: Gonderi) -> list[str]:
+    """Çocuk kanalı kuralları (marka/cocuk-rehberi.md)."""
+    h: list[str] = []
+    if g.platform != "youtube":
+        h.append("çocuk kanalı yalnızca YouTube'da yayın yapar")
+    if not isinstance(g.veri.get("yz_icerik"), bool):
+        h.append("çocuk kanalında 'yz_icerik' (true/false) zorunlu: videoda gerçekçi YZ görüntü/ses var mı?")
+    if g.veri.get("gizlilik", "public") == "unlisted":
+        h.append("çocuk kanalında 'unlisted' kullanılmaz; public veya private seçin")
+    baslik = str(g.veri.get("baslik", "") or "")
+    for alan, deger in (("metin", g.metin), ("baslik", baslik)):
+        bulunan = _COCUK_YASAK.search(deger)
+        if bulunan:
+            h.append(f"çocuk kanalında '{alan}' yoruma/dış bağlantıya yönlendiremez: '{bulunan.group(0)}'")
+    if "## Çocuk güvenliği" not in g.govde:
+        h.append("çocuk kanalı gönderisinde '## Çocuk güvenliği' bölümü (editör kontrol listesi) olmalı")
     return h

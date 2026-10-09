@@ -43,6 +43,29 @@ Claude Code'u web/mobil üzerinden kullanıyorsanız `.env` yerine ortam (enviro
 gizli değişkenleri kullanın ve ağ politikasının `graph.facebook.com`, `*.googleapis.com`,
 `open.tiktokapis.com` alan adlarına izin verdiğinden emin olun.
 
+## Çocuk kanalı (YouTube, okul öncesi 3-6 yaş)
+
+Ayrı bir YouTube kanalı aynı ajan ekibiyle yönetilir; haftada bir onay vermeniz yeterli.
+
+```
+ /cocuk-plan → takvim + senaryo + sahne sahne üretim paketi + kapak brief'i + editör   (durum: incelendi)
+ siz: videoları üretin (CapCut vb.) → medya/cocuk/<kimlik>.mp4                         (git dışı)
+ /onayla <kimlikler>  →  /yayinla --zamanla                                           (haftanın videoları bir kerede
+                                                                                       yüklenir, YouTube saatinde açar)
+ /rapor                                                                               (iki kanalı birlikte raporlar)
+```
+
+Bir kerelik kurulum:
+1. YouTube Studio'da çocuk kanalını ayrı bir **marka hesabı** olarak açın; ayarlarda kitleyi "Evet, çocuklar için yapıldı" yapın.
+2. Token: `python -m araclar.youtube_yetkilendir istemci_sirri.json cocuk` (tarayıcıda çocuk kanalını seçin) →
+   çıktıdaki `YOUTUBE_COCUK_YENILEME_TOKENI` satırını `.env`'e ekleyin.
+3. Google Cloud projeniz YouTube API denetiminden (audit) geçmediyse API ile yüklenen videolar **özel** kalır;
+   herkese açık yayın için "YouTube API Services – Audit and Quota Extension" formunu doldurun.
+4. `marka/cocuk-rehberi.md` içindeki `[DOLDURUN]` alanlarını (kanal adı, maskot, renkler) tamamlayın.
+
+Kod tarafından zorlananlar: "Çocuklar için yapıldı" beyanı, YZ içerik bildirimi (`yz_icerik`), yoruma/dış bağlantıya
+çağrı yasağı ve editörün işaretlediği `## Çocuk güvenliği` listesi.
+
 ## Yorum ve DM yanıtları
 `/mesajlar` Instagram ve Facebook DM'lerini, Instagram, Facebook ve YouTube'daki yanıtlanmamış yorumları çeker;
 `musteri-iliskileri` ajanı taslak yazar, şikâyet/fiyat/sipariş/kişisel veri gibi hassas olanları size bırakır.

@@ -2,10 +2,12 @@
 
 Gerekenler: OAuth istemcisi ve youtube.upload + youtube.readonly kapsamlı
 yenileme tokenı (`python -m araclar.youtube_yetkilendir` ile alınır).
+Çocuk kanalı (`kanal: cocuk`) ayrı bir token kullanır: YOUTUBE_COCUK_YENILEME_TOKENI.
 """
 
 from __future__ import annotations
 
+import datetime as dt
 import tempfile
 from pathlib import Path
 
@@ -21,13 +23,16 @@ KAPSAMLAR = [
 ]
 
 
-def _servis():
+TOKEN_DEGISKENI = {"ana": "YOUTUBE_YENILEME_TOKENI", "cocuk": "YOUTUBE_COCUK_YENILEME_TOKENI"}
+
+
+def _servis(kanal: str = "ana"):
     from google.oauth2.credentials import Credentials
     from googleapiclient.discovery import build
 
     kimlik = Credentials(
         token=None,
-        refresh_token=ortam("YOUTUBE_YENILEME_TOKENI"),
+        refresh_token=ortam(TOKEN_DEGISKENI[kanal]),
         client_id=ortam("YOUTUBE_ISTEMCI_ID"),
         client_secret=ortam("YOUTUBE_ISTEMCI_SIRRI"),
         token_uri="https://oauth2.googleapis.com/token",
@@ -49,9 +54,21 @@ def _yerel_dosya(kaynak: str, gecici: Path) -> Path:
     return yol if yol.is_absolute() else KOK / yol
 
 
-def yayinla(g) -> dict:
-    from googleapiclient.http import MediaFileUpload
+def yayin_zamani(g, simdi: dt.datetime | None = None) -> str | None:
+    """Planlanan tarih gelecekteyse YouTube `publishAt` değeri (UTC, ISO 8601); değilse None."""
+    t = g.planlanan
+    if t is None:
+        return None
+    if t.tzinfo is None:
+        from zoneinfo import ZoneInfo
+        t = t.replace(tzinfo=ZoneInfo("Europe/Istanbul"))
+    simdi = simdi or dt.datetime.now(dt.timezone.utc)
+    if t <= simdi:
+        return None
+    return t.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
+
+def govde_olustur(g, simdi: dt.datetime | None = None, zamanla: bool = False) -> dict:
     aciklama = g.metin
     if g.tur == "shorts" and "#shorts" not in aciklama.lower():
         aciklama += "\n\n#Shorts"
@@ -65,12 +82,27 @@ def yayinla(g) -> dict:
         },
         "status": {
             "privacyStatus": g.veri.get("gizlilik", "public"),
-            "selfDeclaredMadeForKids": False,
+            # Çocuk kanalında COPPA beyanı zorunlu; ana kanal çocuklara yönelik değil.
+            "selfDeclaredMadeForKids": g.kanal == "cocuk",
         },
     }
+    if isinstance(g.veri.get("yz_icerik"), bool):
+        govde["status"]["containsSyntheticMedia"] = g.veri["yz_icerik"]
+    zaman = yayin_zamani(g, simdi) if zamanla else None
+    if zaman:  # YouTube'un kendi zamanlaması: özel yüklenir, zamanı gelince herkese açılır
+        govde["status"]["privacyStatus"] = "private"
+        govde["status"]["publishAt"] = zaman
+    return govde
+
+
+def yayinla(g, zamanla: bool = False) -> dict:
+    """`zamanla` ve planlanan tarih gelecekteyse video özel yüklenip o saatte otomatik açılır."""
+    from googleapiclient.http import MediaFileUpload
+
+    govde = govde_olustur(g, zamanla=zamanla)
     with tempfile.TemporaryDirectory() as d:
         dosya = _yerel_dosya(g.medya[0], Path(d))
-        istek = _servis().videos().insert(
+        istek = _servis(g.kanal).videos().insert(
             part="snippet,status", body=govde,
             media_body=MediaFileUpload(str(dosya), chunksize=-1, resumable=True),
         )
@@ -80,11 +112,14 @@ def yayinla(g) -> dict:
     vid = yanit["id"]
     url = (f"https://www.youtube.com/shorts/{vid}" if g.tur == "shorts"
            else f"https://www.youtube.com/watch?v={vid}")
-    return {"platform_id": vid, "url": url}
+    sonuc = {"platform_id": vid, "url": url, "kanal": g.kanal}
+    if "publishAt" in govde["status"]:
+        sonuc["zamanlanan_yayin"] = govde["status"]["publishAt"]
+    return sonuc
 
 
 def metrikler(sonuc: dict) -> dict:
-    yanit = _servis().videos().list(part="statistics", id=sonuc["platform_id"]).execute()
+    yanit = _servis(sonuc.get("kanal", "ana")).videos().list(part="statistics", id=sonuc["platform_id"]).execute()
     if not yanit.get("items"):
         return {"not": "video bulunamadı"}
     s = yanit["items"][0]["statistics"]

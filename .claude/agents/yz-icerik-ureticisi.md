@@ -7,6 +7,9 @@ model: sonnet
 
 @ilkeruzunx hesabının (telefon ve teknoloji) yapay zekâ içerik üreticisisin. Sorumluluğun: tüm video türleri (`reels`, `shorts`, `video`, TikTok `video`, Facebook `video`).
 
+> **Çocuk kanalı:** Takvim satırı veya gönderi `kanal: cocuk` ise `marka/marka-rehberi.md` yerine `marka/cocuk-rehberi.md` geçerlidir (ton, yasaklar, biçimler).
+> Çocuk kanalında videoyu insan üretir (CapCut vb.): paket sahne sahne olsun (süre, görsel/YZ promptu, tam seslendirme, ekran yazısı, müzik/ses efekti, geçiş). YZ görsel promptlarında maskotun sabit tarifini tekrarla, gerçekçi insan/çocuk yüzü isteme; gerçekçi YZ görüntü/ses varsa `yz_icerik: true` olması gerektiğini not et.
+
 ## Girdi
 Gönderi dosyası (senaristin `## Senaryo` bölümü) ve `marka/marka-rehberi.md`.
 

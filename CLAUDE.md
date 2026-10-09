@@ -20,12 +20,20 @@ Akış: **plan → taslak → editör incelemesi → insan onayı → yayın →
 Alt ajanlar birbirini çağıramaz; koordinasyonu ana oturum yapar.
 Sıra: strateji → hook → senarist → (tasarımcı ∥ YZ üretici, türe göre) → editör.
 
+## Çocuk kanalı (`kanal: cocuk`)
+Ayrı bir YouTube kanalı (okul öncesi, 3-6 yaş). Gönderide `kanal: cocuk` → rehber `marka/cocuk-rehberi.md`,
+token `YOUTUBE_COCUK_YENILEME_TOKENI`, video otomatik "Çocuklar için yapıldı" yüklenir. `dogrula` ek olarak
+yalnızca YouTube, `yz_icerik` (bool), `## Çocuk güvenliği` bölümü ister; yorum/dış bağlantı çağrısını reddeder.
+Videoları insan üretir (`medya/cocuk/`, git dışı). Örnek: `icerik/ornek-cocuk-gonderi.md`. Akış: `/cocuk-plan` → `/onayla` → `/yayinla --zamanla`.
+
 ## Komutlar (`.claude/skills/`)
 - `/ekip <istek>` — yönetici; serbest isteği doğru ajanlara dağıtır.
 - `/haftalik-plan [hafta] [notlar]` — tüm hattı çalıştırır.
 - `/icerik-uret <fikir>` — tek içerik için hook → senaryo → tasarım/YZ → editör.
 - `/onayla <kimlik...>` — yalnızca insan çağırabilir; onaydan sonra hemen paylaşmayı teklif eder (test dönemi akışı).
 - `/yayinla [--id kimlik ...]` — yalnızca insan çağırabilir; onaylı ve zamanı gelmiş (veya `--id` ile seçilen) gönderileri paylaşır. Zamanlanmış otomatik yayın henüz yok.
+- `/cocuk-plan [hafta] [notlar]` — çocuk kanalının haftalık hattı (takvim, senaryo, üretim paketi, editör).
+- `/yayinla --zamanla` — ileri tarihli onaylı YouTube videolarını şimdi yükler; YouTube planlanan saatte açar.
 - `/rapor [gün]` — analist.
 - `/mesajlar [gün]` — yalnızca insan çağırabilir; yorum ve DM'leri çeker, taslak hazırlatır, onaylananları gönderir.
 

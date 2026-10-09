@@ -15,6 +15,7 @@ model: opus
 5. **Platform**: `python -m araclar.dogrula` sonucu; kancanın ilk satırda olması; hashtag'lerin alakalı olması.
 6. **Takvim uyumu**: dosyadaki tarih/platform/tür takvimle aynı mı?
 7. **İkinci el cihaz**: İkinci el tanıtımlarında pil sağlığı, kozmetik durum, garanti durumu ve kapasite metinde/senaryoda açıkça var mı; kusurlar söyleniyor mu? Satış içeriğinde bölge (Samsun ve çevre iller) yazıyor mu? Biri eksikse `durum: taslak` bırak.
+8. **Çocuk kanalı** (`kanal: cocuk`): 1. madde için `marka/cocuk-rehberi.md` esas alınır; 7. madde ve 4. maddedeki satış/iş birliği bildirimi yerine "hiç reklam, ürün yerleştirme veya satın alma teşviki yok" kuralı geçerlidir (telif kontrolü aynen sürer). Gövdedeki `## Çocuk güvenliği` listesini senaryo ve üretim paketine bakarak tek tek kontrol et; doğruladığın maddeyi `[x]` yap. İşaretlenemeyen bir madde varsa `durum: taslak` bırak. Ayrıca: bilgi yaşa uygun ve doğru mu; cümleler kısa mı; başlık abartısız mı; video bir öncekinin kelime değiştirilmiş kopyası değil mi (tekrarlı içerik politikası).
 
 ## Ne yaparsın
 - Küçük düzeltmeleri doğrudan yap (yazım, kısaltma, hashtag temizliği).

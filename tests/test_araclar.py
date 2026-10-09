@@ -373,3 +373,73 @@ def test_kanca_ertelendi_serbest():
                    "new_string": "durum: ertelendi"}) == 0
     assert _kanca({"file_path": yol, "old_string": "durum: ertelendi",
                    "new_string": "durum: taslak"}) == 0
+
+
+ORNEK_COCUK = KOK / "icerik" / "ornek-cocuk-gonderi.md"
+
+
+def test_ornek_cocuk_gecerli():
+    assert dogrula(oku(ORNEK_COCUK)) == []
+
+
+@pytest.mark.parametrize("degisiklik, beklenen", [
+    ({"platform": "instagram", "tur": "reels"}, "yalnızca YouTube"),
+    ({"yz_icerik": None}, "yz_icerik"),
+    ({"metin": "Beğendiysen yorumlara yaz!"}, "yorum"),
+    ({"metin": "Daha fazlası: https://ornek.com"}, "dış bağlantı"),
+    ({"gizlilik": "unlisted"}, "unlisted"),
+    ({"kanal": "bilinmeyen"}, "bilinmeyen kanal"),
+])
+def test_cocuk_dogrulama_hatalari(degisiklik, beklenen):
+    g = oku(ORNEK_COCUK)
+    g.veri.update(degisiklik)
+    assert any(beklenen in h for h in dogrula(g))
+
+
+def test_cocuk_guvenlik_bolumu_zorunlu():
+    g = oku(ORNEK_COCUK)
+    g.govde = g.govde.replace("## Çocuk güvenliği", "## Notlar")
+    assert any("Çocuk güvenliği" in h for h in dogrula(g))
+
+
+def test_youtube_cocuk_govdesi_ve_zamanlama():
+    import datetime as dt
+    from araclar.platformlar import youtube
+    g = oku(ORNEK_COCUK)
+    once = dt.datetime(2026, 10, 1, tzinfo=dt.timezone.utc)
+    st = youtube.govde_olustur(g, once)["status"]
+    assert "publishAt" not in st and st["privacyStatus"] == "public"  # zamanla istenmedi
+    st = youtube.govde_olustur(g, once, zamanla=True)["status"]
+    assert st["selfDeclaredMadeForKids"] is True and st["containsSyntheticMedia"] is False
+    assert st["privacyStatus"] == "private" and st["publishAt"] == "2026-10-20T07:00:00Z"
+
+    sonra = dt.datetime(2026, 11, 1, tzinfo=dt.timezone.utc)
+    st = youtube.govde_olustur(g, sonra, zamanla=True)["status"]
+    assert "publishAt" not in st and st["privacyStatus"] == "public"  # zaman geçmiş
+
+    ana = oku(ORNEK)
+    ana.veri.update(platform="youtube", tur="shorts", baslik="x")
+    st = youtube.govde_olustur(ana, sonra)["status"]
+    assert st["selfDeclaredMadeForKids"] is False and "containsSyntheticMedia" not in st
+
+
+def test_yayinla_zamanla_ileri_youtube(klasor, monkeypatch):
+    c = oku(ORNEK_COCUK)
+    c.veri.update(durum="onaylandi", onaylayan="Test", planlanan_tarih="2099-01-01T10:00:00+03:00")
+    c.yol = klasor / f"{c.kimlik}.md"
+    c.kaydet()
+    ig = _kopya(klasor, durum="onaylandi", onaylayan="Test", planlanan_tarih="2099-01-01T10:00:00+03:00")
+
+    class Sahte:
+        @staticmethod
+        def yayinla(_, zamanla=False):
+            assert zamanla
+            return {"platform_id": "v1", "url": "https://youtu.be/v1", "kanal": "cocuk",
+                    "zamanlanan_yayin": "2099-01-01T07:00:00Z"}
+
+    monkeypatch.setattr(yayinla, "istemci", lambda p: Sahte)
+    assert yayinla.main(["--gercek"]) == 0
+    assert oku(c.yol).durum == "onaylandi"
+    assert yayinla.main(["--zamanla", "--gercek"]) == 0
+    assert oku(c.yol).veri["yayin"]["zamanlanan_yayin"] == "2099-01-01T07:00:00Z"
+    assert oku(ig.yol).durum == "onaylandi"  # Instagram zamanlanamaz, beklemeye devam
